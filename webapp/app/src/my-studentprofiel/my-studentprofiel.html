@@ -142,10 +142,10 @@
         <template is="dom-repeat" items="{{lessonpresent}}" as="less">
           <div class="col-1">&nbsp;</div>
           <div class="col-6">
-            [[less.vak]]
+            [[less.0]]
           </div>
           <div class="col-5">
-            [[less.aanwezig]] %
+            [[less.1]] %
           </div>
         </template>
       </div>
@@ -163,7 +163,7 @@
     <iron-ajax
             id="ajax_student_les"
             method="POST"
-            url="/"
+            url="/student/presentie/ophalen"
             handle-as="json"
             on-response="student_les_response_handler">
     </iron-ajax>
@@ -209,21 +209,7 @@
           },
           lessonpresent: {
             type: Array,
-            value: [
-              {vak:"OODC", aanwezig :"50"},
 
-              {vak:"AUI", aanwezig :"23"},
-
-              {vak:"CSN", aanwezig :"42"},
-
-              {vak:"BASIC", aanwezig :"53"},
-
-              {vak:"Gym", aanwezig :"86"},
-              {vak:"ENGELS", aanwezig :"90"},
-              {vak:"NEderlands", aanwezig :"100"},
-              {vak:"Test", aanwezig :"23"},
-              {vak:"Groepproject", aanwezig :"44"}
-            ]
           },
 
 
@@ -273,7 +259,8 @@
           this.$.ajax_student_les.generateRequest();
         },
         student_les_response_handler: function(response){
-          console.log(request.detail.response);
+          console.log(Object.entries(response.detail.response));
+          this.set('lessonpresent',Object.entries(response.detail.response));
         },
         klas_ophalen_request_handler: function() {
           // console.log("_medestudenten_ophalen_request_handler user="+this.c_username);
