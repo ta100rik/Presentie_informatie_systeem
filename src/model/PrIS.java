@@ -310,7 +310,7 @@ public class PrIS {
 		//get presence and amount of classes per student
 		for (Student s : deStudenten) {
 			for (Les l : lessen) {
-				System.out.println(l.getStartdatum() +" "+datum);
+//				System.out.println(l.getStartdatum() +" "+datum);
 				if (s.getRooster().contains(l) && l.getStartdatum().before(datum)) {
 					if (klas.getStudenten().contains(s)) {
 						if (aantalLessenPresent.containsKey(s.getStudentNummer())) {

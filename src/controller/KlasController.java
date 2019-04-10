@@ -81,7 +81,8 @@ class KlasController implements Handler {
                             .add("studentnaam", s.getGebruikersnaam())
                             .add("aanwezigheid", aJsonObjectBuilder);
 
-                    kJsonObjectBuilder.add(String.format("%s",snummer), sJsonObjectBuilder);
+                    sJsonObjectBuilder.add("studentnummer", snummer).add("studentnaam", s.getGebruikersnaam()).add("aanwezigheid", aJsonObjectBuilder);
+                    kJsonObjectBuilder.add(String.format("%s", snummer), sJsonObjectBuilder);
 
                 }
             }

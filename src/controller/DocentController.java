@@ -32,8 +32,8 @@ public class DocentController implements Handler {
     }
     public void returnDocent(Conversation conversation){
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-        String userName = JsonObjIn.getString("userName");
-//        String userName = "alex.jongman@hu.nl";
+//        String userName = JsonObjIn.getString("userName");
+        String userName = "alex.jongman@hu.nl";
         JsonObjectBuilder docentbuilder = Json.createObjectBuilder();
         JsonObjectBuilder rooster = Json.createObjectBuilder();
         for(Docent s: informatieSysteem.getDeDocenten()){

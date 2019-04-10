@@ -1,0 +1,25 @@
+/docent/ophalen: 
+"userName": gebruikersnaam("alex.jongman@hu.nl")
+
+/klas/ophalen:
+"klasCode": klascode("TICT-SIE-V1D")
+
+/les/ophalen:
+"lesID": integer
+
+/les/rooster/ophalen:
+"rol":docent/student
+"username":gebruikersnaam ("alex.jongman@hu.nl"/"zyad.osseyran@student.hu.nl")
+
+/les/gemiddeldepresentie/ophalen:
+"lesCode": lescode("TCIF-V1AUI-17_2018")
+"klasCode": klascode("TICT-SIE-V1A")
+"datum": date("yyyy-MM-dd hh:mm")
+tot wanneer de lessen moeten worden bekeken
+
+/les/setPresentie:
+"lesID": integer
+"presentie": JsonObject{studentnr:true, studentnr:true}
+
+/student/ophalen:
+"userName" = gebruikersnaam("zyad.osseyran@student.hu.nl")
