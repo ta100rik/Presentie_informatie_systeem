@@ -109,7 +109,7 @@
           },
           username: {
             type: String,
-            value: "alex.jongman@hu.nl",              /* om snel te testen zonder steeds input te doen */
+            value: "zyad.osseyran@student.hu.nl",              /* om snel alex.jongman@hu.nl te testen zonder steeds input te doen */
             notify: true
           },
         },
@@ -118,7 +118,8 @@
           if (e.currentTarget.id == "email_element") {
             if (e.keyCode === 13) {
               var lWachtwoordElement =
-                this.$.wachtwoord_element;          /* haal uit de $ collectie van alle polymer element
+                this.$.wachtwoord_element;
+              /* haal uit de $ collectie van alle polymer element
                                                        het element met id = "wachtwoord_element" */
             lWachtwoordElement.focus();             // plaats de cursor er in
             }
