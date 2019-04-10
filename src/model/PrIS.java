@@ -220,10 +220,10 @@ public class PrIS {
 				for (String s: element){
 					//check of de index een leraar of klas is en voeg toe aan desbetreffende array
 					if(s.contains("@")){
-						docentenarray.add(s);
+						docentenarray.add(ConvertToNiceString(s));
 					}
 					if(s.contains("TICT-") && !s.contains("_")){
-						klassenarray.add(s);
+						klassenarray.add(ConvertToNiceString(s));
 					}
 					if(s.contains("(")){
 						lokaal = s;
@@ -234,10 +234,6 @@ public class PrIS {
 				docenten = docentenarray.toArray(docenten);
 				String[] klassen = new String[klassenarray.size()];
 				klassen = klassenarray.toArray(klassen);
-//				for(String s: klassenarray){
-//					String klas = ConvertToNiceString(s);
-//					klassenarray.
-//				}
 
 				//maak les met alle docenten en klassen
 				Les l = new Les(ConvertToNiceString(element[1]), ConvertToNiceString(element[0]), docenten, klassen, startdate, enddate, ConvertToNiceString(lokaal));
