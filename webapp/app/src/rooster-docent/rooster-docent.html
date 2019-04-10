@@ -94,8 +94,12 @@
                <tr>
                    <template is="dom-repeat" items="[[test(less)]]">
                        <!--<td><template is="dom-repeat" items="{{item}}">-->
+
                        <td>
-                           {{item}}
+
+                           <a name="login" href$="[[_c_baseURL]]/#/Docent_Presentielijst" >
+                               {{item}}
+                           </a>
                        </td>
                        <!--</template></td>-->
                    </template>

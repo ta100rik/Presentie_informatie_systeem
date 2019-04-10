@@ -153,11 +153,19 @@
     </div>
   </div>
     <iron-ajax
-            id="ajax_medestudenten_ophalen"
+            id="ajax_student_ophalen"
             method="POST"
-            url="/klas/ophalen"
+            url="/student/ophalen"
             handle-as="json"
-            on-response="klas_lijst_response_handler">
+            on-response="student_response_handler">
+    </iron-ajax>
+
+    <iron-ajax
+            id="ajax_student_les"
+            method="POST"
+            url="/"
+            handle-as="json"
+            on-response="student_les_response_handler">
     </iron-ajax>
 
   </template>
@@ -189,11 +197,9 @@
           },
           present:{
             type:Number,
-            value:60,
           },
           notpresent:{
             type:Number,
-            value:40,
           },
           c_visible: {
             type: Boolean,
@@ -227,8 +233,9 @@
           if(this.c_visible){
             if(this.c_rol == 'student'){
               this.setnames();
-              this.setpresentchart();
+              // this.setpresentchart();
               this.klas_ophalen_request_handler();
+              this.ophalen_les_student();
             }else{
               this._go_home();
             }
@@ -257,24 +264,45 @@
           let notpresent = this.notpresent;
           this.shadowRoot.getElementById('presentchart').setAttribute('data', '['+present+','+notpresent+']');
         },
+        ophalen_les_student: function() {
+          // console.log("_medestudenten_ophalen_request_handler user="+this.c_username);
+          this.$.ajax_student_les.contentType="application/json";
+          this.$.ajax_student_les.body={
+            "userName":this.c_username
+          };
+          this.$.ajax_student_les.generateRequest();
+        },
+        student_les_response_handler: function(response){
+          console.log(request.detail.response);
+        },
         klas_ophalen_request_handler: function() {
           // console.log("_medestudenten_ophalen_request_handler user="+this.c_username);
-          this.$.ajax_medestudenten_ophalen.contentType="application/json";
-          this.$.ajax_medestudenten_ophalen.body={
-            "klasCode":'TICT-SIE-V1D'
+          this.$.ajax_student_ophalen.contentType="application/json";
+          this.$.ajax_student_ophalen.body={
+            "userName":this.c_username
           };
-          this.$.ajax_medestudenten_ophalen.generateRequest();
+          this.$.ajax_student_ophalen.generateRequest();
         },
 
-        klas_lijst_response_handler: function(request) {
-          
-          console.log(request.detail.response);
-          var x = request.detail.response;
-          // console.log(x);
+        student_response_handler: function(request) {
+          // console.log(request.detail.response.rooster);
+          var totaal = Object.keys(request.detail.response.rooster).length;
+          var countaanwezig = 0;
+          var countafwezig = 0;
+          for (var i = 0;i < totaal;i++){
+            if(request.detail.response.rooster[i].aanwezig){
+              countaanwezig++;
+            }else{
+              countafwezig++;
+            }
 
-          for (var i = 20 - 1; i >= 0; i--) {
-            console.log(x[i]);
           }
+          var aanwezig_prec = countaanwezig / totaal *100;
+
+          var afwezig_prec = countafwezig / totaal *100;
+          this.set('present', aanwezig_prec);
+          this.set('notpresent',afwezig_prec);
+          this.setpresentchart();
 
           // sander.degans@student.hu.nl
           

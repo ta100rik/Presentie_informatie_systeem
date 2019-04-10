@@ -31,8 +31,8 @@ public class StudentController implements Handler {
     }
     public void returnStudent(Conversation conversation){
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-        //String userName = JsonObjIn.getString("userName");
-        String userName = "zyad.osseyran@student.hu.nl";
+        String userName = JsonObjIn.getString("userName");
+//        String userName = "zyad.osseyran@student.hu.nl";
         JsonObjectBuilder studentbuilder = Json.createObjectBuilder();
         JsonObjectBuilder rooster = Json.createObjectBuilder();
         JsonObjectBuilder aanwezigheid = Json.createObjectBuilder();
