@@ -65,8 +65,8 @@ public class LesController implements Handler {
     private void returnLes(Conversation conversation) {
         JsonObject lJsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
 
-//        int lesID =lJsonObjIn.getInt("lesID");                      //Should be integer
-        int lesID=10;
+        int lesID =lJsonObjIn.getInt("lesID");                      //Should be integer
+//        int lesID=10;
 
         JsonObjectBuilder sJsonObjectBuilder = Json.createObjectBuilder();
         //voeg alle attributen toe
@@ -185,15 +185,15 @@ public class LesController implements Handler {
      */
     private void returnGemiddeldePresentie(Conversation conversation) {
         JsonObject lJsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-        String lesCode = "TCIF-V1AUI-17_2018";
-        String klasCode = "TICT-SIE-V1A";
-        //String lesCode = lJsonObjIn.getString("lesCode");
-        //String klasCode = lJsonObjIn.getString("klasCode");
+//        String lesCode = "TCIF-V1AUI-17_2018";
+//        String klasCode = "TICT-SIE-V1A";
+        String lesCode = lJsonObjIn.getString("lesCode");
+        String klasCode = lJsonObjIn.getString("klasCode");
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         Date huidigeDatum = new Date();
         try{
-            huidigeDatum = format.parse("2019-02-20 16:00");
-            //huidigeDatum =format.parse(lJsonObjIn.getString("datum"));
+//            huidigeDatum = format.parse("2019-02-20 16:00");
+            huidigeDatum =format.parse(lJsonObjIn.getString("datum"));
         }catch (ParseException e){
             System.out.println(e);
         }
