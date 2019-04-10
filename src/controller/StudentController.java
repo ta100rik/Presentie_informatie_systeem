@@ -35,7 +35,7 @@ public class StudentController implements Handler {
             returnStudent(conversation);
         } else if(conversation.getRequestedURI().startsWith("/student/presentie/ophalen")){
             returnStudentAanwezigheid(conversation);
-        } else if(conversation.getRequestedURI().startsWith("/student/presentie/afwezig")){
+        } else if(conversation.getRequestedURI().startsWith("/student/presentie/setafmelden")){
             setAfgemeld(conversation);
         }
     }
