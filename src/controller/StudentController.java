@@ -70,14 +70,14 @@ public class StudentController implements Handler {
     public void returnStudentAanwezigheid(Conversation conversation){
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
         String userName = JsonObjIn.getString("userName");
-        Date huidigeDatum = new Date();
-        SimpleDateFormat format =  new SimpleDateFormat("yyyy/MM/dd hh:mm");
-        try{
-            huidigeDatum = format.parse(JsonObjIn.getString("datum"));
-        }catch (ParseException e){
-            conversation.sendJSONMessage(e.toString());
-            huidigeDatum = new Date("2019/02/20 16:00");
-        }
+//        Date huidigeDatum = new Date();
+//        SimpleDateFormat format =  new SimpleDateFormat("yyyy/MM/dd hh:mm");
+//        try{
+//            huidigeDatum = format.parse(JsonObjIn.getString("datum"));
+//        }catch (ParseException e){
+//            conversation.sendJSONMessage(e.toString());
+//            huidigeDatum = new Date("2019/02/20 16:00");
+//        }
 //        String userName = "zyad.osseyran@student.hu.nl";
         Map<String, Integer> aanwezigheid = new HashMap<>();
         Map<String, Integer> totaal = new HashMap<>();
@@ -86,7 +86,7 @@ public class StudentController implements Handler {
         for(Student s: informatieSysteem.getDeStudenten()){
             if(s.getGebruikersnaam().contains(userName)) {
                 for (Les l : s.getRooster()) {
-                    if (l.getStartdatum().before(huidigeDatum)) {
+//                    if (l.getStartdatum().before(huidigeDatum)) {
                         System.out.println(l.getLesCode() + l.getStartdatum());
                         System.out.println(l.getStudentAanwezigheid(s.getStudentNummer()));
                         boolean aanwezig = l.getStudentAanwezigheid(s.getStudentNummer());
@@ -102,7 +102,7 @@ public class StudentController implements Handler {
                         totaalcounter += 1;
                         totaal.put(l.getLesCode(), totaalcounter);
                         aanwezigheid.put(l.getLesCode(), aanwezigheidcounter);
-                    }
+//                    }
                 }
             }
         }
