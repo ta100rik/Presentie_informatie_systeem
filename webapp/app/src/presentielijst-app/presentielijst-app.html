@@ -4,243 +4,245 @@
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
 <dom-module id="presentielijst-app">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
 
-      /* default container */
-      #container{
-        height: 100%;
-        width: 100%;
-        position: absolute;
-        background: rgb(195, 204, 195);
-        top:0;
-        left:0;
-      }
+            /* default container */
+            #container{
+                height: 100%;
+                width: 100%;
+                position: absolute;
+                background: rgb(195, 204, 195);
+                top:0;
+                left:0;
+            }
 
-      /* initial table */
-      #presentielijst{
-        width: 100%;
-        border-spacing: 0px;
-        overflow: auto;
-        border-collapse: none !important;
-        font-family: Georgia, 'Times New Roman', Times, serif;
-      }
+            /* initial table */
+            #presentielijst{
+                width: 100%;
+                border-spacing: 0px;
+                overflow: auto;
+                border-collapse: none !important;
+                font-family: Georgia, 'Times New Roman', Times, serif;
+            }
 
-      /* Table Head styling */
+            /* Table Head styling */
 
-      #presentielijst th{
-        width: 25%;
-        height: 40px;
-        background:#5B9BD5;
-        color: white;
-      }
+            #presentielijst th{
+                width: 25%;
+                height: 40px;
+                background:#5B9BD5;
+                color: white;
+            }
 
-      /* Basic styling for data boxes */
+            /* Basic styling for data boxes */
 
-      #presentielijst td{
-        width: 25%;
-        height: 30px;
-        text-align: center;
-        border: 1px solid #5B9BD5;
-        color: black;
-      }
+            #presentielijst td{
+                width: 25%;
+                height: 30px;
+                text-align: center;
+                border: 1px solid #5B9BD5;
+                color: black;
+            }
 
 
-      #presentielijst tr:nth-child(even){
-        background: #DEEAF6;
-      }
+            #presentielijst tr:nth-child(even){
+                background: #DEEAF6;
+            }
 
-      #presentielijst tr:nth-child(odd){
-        background: #FFFFFFFF;
-      }
+            #presentielijst tr:nth-child(odd){
+                background: #FFFFFFFF;
+            }
 
-      /* Button styling */
+            /* Button styling */
 
-      button{
-        border: 0.5px solid black;
-        border-radius: 12px;
-        width: 25%;
-        height: 15px;
-      }
+            button{
+                border: 0.5px solid black;
+                border-radius: 12px;
+                width: 25%;
+                height: 15px;
+            }
 
-      /* Absence buttons styling */
+            /* Absence buttons styling */
 
-      .defaultbutton{
-        background: white;
-      }
+            .defaultbutton{
+                background: white;
+            }
 
-      .presentbutton{
-        background: rgb(42, 187, 42);
-      }
+            .presentbutton{
+                background: rgb(42, 187, 42);
+            }
 
-      .absentbutton{
-        background: rgb(245, 60, 60);
-      }
-      
-      /* Create div to complete process */
+            .absentbutton{
+                background: rgb(245, 60, 60);
+            }
 
-      #WrapUpDiv{
-        width: 100%;
-        height: 30px;
-        position: absolute;
-        background:#5B9BD5;
-      }
+            /* Create div to complete process */
 
-      /* Commpletion button styling */
+            #WrapUpDiv{
+                width: 100%;
+                height: 30px;
+                position: absolute;
+                background:#5B9BD5;
+            }
 
-      #WrapUp{
-        float: right;
-        background-color: white;
-        color: black;
-        border: 2px solid #555555;
-        border-radius: 0px;
-        height: 100%;
-        width: 100px;
-        margin-right: 6.5%;
-      }
+            /* Commpletion button styling */
 
-      #WrapUp:hover{
-        background-color: rgb(58, 142, 221);
-        color: white;
-      }
-    </style>
+            #WrapUp{
+                float: right;
+                background-color: white;
+                color: black;
+                border: 2px solid #555555;
+                border-radius: 0px;
+                height: 100%;
+                width: 100px;
+                margin-right: 6.5%;
+            }
 
-<div id = "container">
+            #WrapUp:hover{
+                background-color: rgb(58, 142, 221);
+                color: white;
+            }
+        </style>
 
-  <!-- Create table -->
-  <table id="presentielijst">
+        <div id = "container">
 
-    <!-- Table header -->
-    <tr><th>Naam</th><th>Achternaam</th><th>Studentnummer</th><th>Present</th><th>Afwezig</th></tr>
+            <!-- Create table -->
+            <table id="presentielijst">
 
-    <!-- Fill table with data -->
-    <template is="dom-repeat" items="{{DummyStudents}}" as="Student">
-      <tr id="[[Student.studentnum]]">
-        <td>[[Student.name]]</td>
-        <td>[[Student.surname]]</td>
-        <td>[[Student.studentnum]]</td>
+                <!-- Table header -->
+                <tr><th>Naam</th><th>Achternaam</th><th>Studentnummer</th><th>Present</th><th>Afwezig</th></tr>
 
-        <!-- If present green button -->
-        <template is="dom-if" if="[[Student.present]]">
-            <td><button class="presentbutton" id="[[Student.studentnum]]test" value="[[Student.studentnum]]" on-click="test"></button></td>
-            <!-- <td><button class="defaultbutton" id="[[Student.studentnum]]def" value="[[Student.studentnum]]" on-click="absenceHandler"></button></td> -->
-         </template>
+                <!-- Fill table with data -->
+                <template is="dom-repeat" items="{{DummyStudents}}" as="Student">
+                    <tr id="[[Student.studentnum]]">
+                        <td>[[Student.name]]</td>
+                        <td>[[Student.surname]]</td>
+                        <td>[[Student.studentnum]]</td>
 
-         <!-- If absence red button -->
-         <template is="dom-if" if="[[Student.Absence]]">
-            <!-- <td><button class="defaultbutton" id="[[Student.studentnum]]def" value="[[Student.studentnum]]" on-click="presenceHandler"></button></td> -->
-            <td><button class="absentbutton" id="[[Student.studentnum]]test" value="[[Student.studentnum]]" on-click="test"></button></td>
-         </template>
-      </tr>
-      <!-- end of row -->
+                        <!-- If present green button -->
+                        <template is="dom-if" if="[[Student.present]]">
+                            <td><button class="presentbutton" id="[[Student.studentnum]]test" value="[[Student.studentnum]]" on-click="test"></button></td>
+                            <!-- <td><button class="defaultbutton" id="[[Student.studentnum]]def" value="[[Student.studentnum]]" on-click="absenceHandler"></button></td> -->
+                        </template>
+
+                        <!-- If absence red button -->
+                        <template is="dom-if" if="[[Student.Absence]]">
+                            <!-- <td><button class="defaultbutton" id="[[Student.studentnum]]def" value="[[Student.studentnum]]" on-click="presenceHandler"></button></td> -->
+                            <td><button class="absentbutton" id="[[Student.studentnum]]test" value="[[Student.studentnum]]" on-click="test"></button></td>
+                        </template>
+                    </tr>
+                    <!-- end of row -->
+                </template>
+            </table>
+            <!-- End of table  -->
+
+            <!-- Wrap-up div -->
+            <div id="WrapUpDiv"><button id="WrapUp" on-click="WrapUpHandler">Afronden</button></div>
+        </div>
+
+        <!-- End of container -->
+
+
+
     </template>
-  </table>
-   <!-- End of table  -->
 
-   <!-- Wrap-up div -->
-  <div id="WrapUpDiv"><button id="WrapUp" on-click="WrapUpHandler">Afronden</button></div>
-</div>
-
-<!-- End of container -->
+    <script>
 
 
-
-  </template>
-
-  <script>
-    /**  
-     * @customElement
-     * @polymer
-     */
-    class PresentielijstApp extends Polymer.Element {
-      static get is() { return 'presentielijst-app'; }
-      static get properties() {
-        return {
-          DummyStudents: {
-            type: Array,
-            value: [
-              {name : "Peter", surname : "de Vries", studentnum : 123321, present : false, Absence :  true},
-              {name : "Koos", surname : "Achterhoek", studentnum : 324432, present : true, Absence :  false},
-              {name : "Freek", surname : "Vonk", studentnum : 234432, present : false, Absence :  true},
-              {name : "Violette", surname : "Zayas", studentnum : 320432, present : true, Absence :  false},
-              {name : "Marvin", surname : "Alday", studentnum : 546650, present : false, Absence :  true},
-              {name : "Helen", surname : "Hong", studentnum : 476747, present : true, Absence :  false},
-              {name : "Donetta", surname : "Minnix", studentnum : 534590, present : false, Absence :  true},
-              {name : "Alesia", surname : "Basham", studentnum : 356897, present : true, Absence :  false},
-              {name : "Lyn", surname : "Flewelling", studentnum : 365354, present : false, Absence :  true},
-              {name : "Gilberte", surname : "Wafer", studentnum : 432423, present : true, Absence :  false},
-              {name : "Margeret", surname : "Hundt", studentnum : 123124, present : false, Absence :  true},
-              {name : "Lavinia", surname : "Kimmons", studentnum : 543365, present : false, Absence :  true},
-              {name : "Jc", surname : "Schmit", studentnum : 346559, present : false, Absence :  true},
-              {name : "Alvin", surname : "Capers", studentnum : 324409, present : true, Absence :  false},
-              {name : "Amira", surname : "Croslin", studentnum : 534908, present : false, Absence :  true},
-              {name : "Louanne", surname : "Berkman", studentnum : 348976, present : true, Absence :  false},
-              {name : "Jerry", surname : "Nurse", studentnum : 978943, present : false, Absence :  true},
-              {name : "Amiee", surname : "Belgarde", studentnum : 213120, present : true, Absence :  false}
-            ]
-          }
-        };
-      }
+        /**
+         * @customElement
+         * @polymer
+         */
+        class PresentielijstApp extends Polymer.Element {
+            static get is() { return 'presentielijst-app'; }
+            static get properties() {
+                return {
+                    DummyStudents: {
+                        type: Array,
+                        value: [
+                            {name : "Peter", surname : "de Vries", studentnum : 123321, present : false, Absence :  true},
+                            {name : "Koos", surname : "Achterhoek", studentnum : 324432, present : true, Absence :  false},
+                            {name : "Freek", surname : "Vonk", studentnum : 234432, present : false, Absence :  true},
+                            {name : "Violette", surname : "Zayas", studentnum : 320432, present : true, Absence :  false},
+                            {name : "Marvin", surname : "Alday", studentnum : 546650, present : false, Absence :  true},
+                            {name : "Helen", surname : "Hong", studentnum : 476747, present : true, Absence :  false},
+                            {name : "Donetta", surname : "Minnix", studentnum : 534590, present : false, Absence :  true},
+                            {name : "Alesia", surname : "Basham", studentnum : 356897, present : true, Absence :  false},
+                            {name : "Lyn", surname : "Flewelling", studentnum : 365354, present : false, Absence :  true},
+                            {name : "Gilberte", surname : "Wafer", studentnum : 432423, present : true, Absence :  false},
+                            {name : "Margeret", surname : "Hundt", studentnum : 123124, present : false, Absence :  true},
+                            {name : "Lavinia", surname : "Kimmons", studentnum : 543365, present : false, Absence :  true},
+                            {name : "Jc", surname : "Schmit", studentnum : 346559, present : false, Absence :  true},
+                            {name : "Alvin", surname : "Capers", studentnum : 324409, present : true, Absence :  false},
+                            {name : "Amira", surname : "Croslin", studentnum : 534908, present : false, Absence :  true},
+                            {name : "Louanne", surname : "Berkman", studentnum : 348976, present : true, Absence :  false},
+                            {name : "Jerry", surname : "Nurse", studentnum : 978943, present : false, Absence :  true},
+                            {name : "Amiee", surname : "Belgarde", studentnum : 213120, present : true, Absence :  false}
+                        ]
+                    }
+                };
+            }
 
 
-      test(e){
-        var DummyStudents = this.get(['DummyStudents']);
-        let studID = e.currentTarget.value;
-        console.log(studID)
+            test(e){
+                var DummyStudents = this.get(['DummyStudents']);
+                let studID = e.currentTarget.value;
+                console.log(studID)
 
-        var el = this.shadowRoot.getElementById(studID+'test').className;
-        var el2 = this.shadowRoot.getElementById(studID+'test')
-        var j = DummyStudents.length;
-        var i;
+                var el = this.shadowRoot.getElementById(studID+'test').className;
+                var el2 = this.shadowRoot.getElementById(studID+'test')
+                var j = DummyStudents.length;
+                var i;
 
-        for(i = 0; i < j; i++){
-          console.log(DummyStudents[i].studentnum);
-          if(DummyStudents[i].studentnum == studID){
-            var index = i;
-            break;
-          }
-          else{
-            console.log("Student not in class");
-          }
+                for(i = 0; i < j; i++){
+                    console.log(DummyStudents[i].studentnum);
+                    if(DummyStudents[i].studentnum == studID){
+                        var index = i;
+                        break;
+                    }
+                    else{
+                        console.log("Student not in class");
+                    }
 
+                }
+
+                if(el == "presentbutton") {
+                    el2.classList.remove("presentbutton");
+                    el2.classList.add("absentbutton");
+                    DummyStudents[i].Absence = true;
+                    DummyStudents[i].present = false;
+
+                    console.log(DummyStudents[i]);
+
+                } else {
+                    el2.classList.remove("absentbutton");
+                    el2.classList.add("presentbutton");
+                    DummyStudents[i].Absence = false;
+                    DummyStudents[i].present = true;
+
+                    console.log(DummyStudents[i])
+                }
+            }
+
+            //handle wrap-up
+            WrapUpHandler(){
+                //send list to backend?
+                //prompt user to confirm
+                var c = confirm("Afronden");
+                if(c == true){
+                    //do stuff
+                    alert("Userdata saved");
+                }
+                else{
+                    alert("Abort mission");
+                }
+            }
         }
 
-        if(el == "presentbutton") {
-          el2.classList.remove("presentbutton");
-          el2.classList.add("absentbutton");
-          DummyStudents[i].Absence = true;
-          DummyStudents[i].present = false;
-
-          console.log(DummyStudents[i]);
-
-        } else {
-          el2.classList.remove("absentbutton");
-          el2.classList.add("presentbutton");
-          DummyStudents[i].Absence = false;
-          DummyStudents[i].present = true;
-
-          console.log(DummyStudents[i])
-        }
-      }
-
-      //handle wrap-up
-      WrapUpHandler(){
-        //send list to backend?
-        //prompt user to confirm
-        var c = confirm("Afronden");
-        if(c == true){
-          //do stuff
-          alert("Userdata saved");
-        }
-        else{
-          alert("Abort mission");
-        }
-      }
-    }
-
-    window.customElements.define(PresentielijstApp.is, PresentielijstApp);
-  </script>
+        window.customElements.define(PresentielijstApp.is, PresentielijstApp);
+    </script>
 </dom-module>
