@@ -19,16 +19,19 @@ public class Les {
     private String[] klassen;
     private Date startdatum;
     private Date einddatum;
+    private ArrayList<Klas> klassenarray;
+    private Map<Integer, Boolean>statusLijst = new HashMap<>();
     private Map<Integer, Boolean>presentieLijst= new HashMap<>();
 
     public Les(String lLesCode, String lLesNaam, String[] ldocentUsername,
-               String[] lklasCode, Date lstartdatum,  Date leindatum, String llokaal){
+               String[] lklasCode, ArrayList<Klas> klassenarray, Date lstartdatum,  Date leindatum, String llokaal){
         aantalLessen +=1;
         lesID= aantalLessen;
         lesCode = lLesCode;
         lesNaam = lLesNaam;
         docenten = ldocentUsername;
         klassen = lklasCode;
+        this.klassenarray = klassenarray;
         startdatum = lstartdatum;
         einddatum = leindatum;
         lokaal = llokaal;
@@ -36,6 +39,10 @@ public class Les {
 
     public void changePresentieLijst(Integer studentnr, boolean aanwezig){
         presentieLijst.put(studentnr, aanwezig);
+    }
+
+    public void changeStatusLijst(Integer studentnr, boolean afgemeld){
+        statusLijst.put(studentnr, afgemeld);
     }
 
     public void setPresentieLijst(Map<Integer, Boolean> presLst){
@@ -72,6 +79,11 @@ public class Les {
     public boolean getStudentAanwezigheid(Integer studentNummer){
         return presentieLijst.get(studentNummer);
     }
+
+    private Map<Integer, Boolean> getStatusLijst(){
+        return statusLijst;
+    }
+
     public JsonObject returnAsJson(){
         JsonObjectBuilder les = Json.createObjectBuilder();
         DateFormat date = new SimpleDateFormat("yyyy-mm-dd hh:mm");
@@ -84,16 +96,41 @@ public class Les {
             alleklassen+=k.strip()+"; ";
         }
 
+        for(Klas k: klassenarray){
+            System.out.println(k.getKlasCode());
+            for(Student s: k.getStudenten()){
+                statusLijst.put(s.getStudentNummer(),s.getBeschikbaarheid().get(this.getLesID()));
+            }
+        }
         JsonObjectBuilder presentieLijst = Json.createObjectBuilder();
         int index = 0;
+        boolean aanwezig;
+        boolean afgemeld = false;
+        String studentnr;
         for(Map.Entry presentie : getPresentieLijst().entrySet()){
-            String studentnr = presentie.getKey().toString();
-            boolean aanwezig = Boolean.parseBoolean(presentie.getValue().toString());
+            studentnr = presentie.getKey().toString();
+            aanwezig = Boolean.parseBoolean(presentie.getValue().toString());
+            for(Map.Entry afmelding: getStatusLijst().entrySet()){
+                if(afmelding.getKey().toString().contains(studentnr)){
+                    afgemeld = Boolean.parseBoolean(afmelding.getValue().toString());
+                    break;
+                }
+            }
             JsonObjectBuilder studentpresentie = Json.createObjectBuilder();
-            studentpresentie.add("studentnummer", studentnr).add("aanwezig", aanwezig);
+            studentpresentie.add("studentnummer", studentnr).add("aanwezig", aanwezig).add("afgemeld", afgemeld);
             presentieLijst.add(String.format("%s", index), studentpresentie);
             index+=1;
         }
+//        JsonObjectBuilder afmeldLijst = Json.createObjectBuilder();
+//        index = 0;
+//        for(Map.Entry status: statusLijst.entrySet()){
+//            String studentnr = status.getKey().toString();
+//            boolean afgemeld = Boolean.parseBoolean(status.getValue().toString());
+//            JsonObjectBuilder studentafmelding = Json.createObjectBuilder();
+//            studentafmelding.add("studentnummer", studentnr).add("afgemeld", afgemeld);
+//            afmeldLijst.add(String.format("%s", index), studentafmelding);
+//            index+=1;
+//         }
         les
                 .add("lesID", lesID)
                 .add("lesCode", lesCode)

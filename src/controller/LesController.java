@@ -65,8 +65,8 @@ public class LesController implements Handler {
     private void returnLes(Conversation conversation) {
         JsonObject lJsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
 
-        Integer lesID =lJsonObjIn.getInt("lesID");                      //Should be integer
-//        int lesID=10;
+//        int lesID =lJsonObjIn.getInt("lesID");                      //Should be integer
+        int lesID=10;
 
         JsonObjectBuilder sJsonObjectBuilder = Json.createObjectBuilder();
         //voeg alle attributen toe
@@ -85,7 +85,7 @@ public class LesController implements Handler {
             }
         }
         String lJsonOut = sJsonObjectBuilder.build().toString();
-        System.out.println(lJsonOut);
+//        System.out.println(lJsonOut);
         conversation.sendJSONMessage(lJsonOut); // terugsturen naar de Polymer-GUI!
     }
 

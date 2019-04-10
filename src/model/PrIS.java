@@ -215,6 +215,7 @@ public class PrIS {
 				Date enddate=new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(ConvertToNiceString(element[7])+" "+ConvertToNiceString(element[8]));
 				String lokaal ="";
 				ArrayList<String> klassenarray = new ArrayList<>();
+				ArrayList<Klas> klassenobj = new ArrayList<>();
 				ArrayList<String> docentenarray = new ArrayList<>();
 
 				for (String s: element){
@@ -223,6 +224,11 @@ public class PrIS {
 						docentenarray.add(ConvertToNiceString(s));
 					}
 					if(s.contains("TICT-") && !s.contains("_")){
+						for(Klas k: deKlassen) {
+							if(s.contains(k.getKlasCode())) {
+								klassenobj.add(k);
+							}
+						}
 						klassenarray.add(ConvertToNiceString(s));
 					}
 					if(s.contains("(")){
@@ -237,7 +243,7 @@ public class PrIS {
 				klassen = klassenarray.toArray(klassen);
 
 				//maak les met alle docenten en klassen
-				Les l = new Les(lesCode, lesNaam, docenten, klassen, startdate, enddate, lokaal);
+				Les l = new Les(lesCode, lesNaam, docenten, klassen, klassenobj, startdate, enddate, lokaal);
 
 				//voeg les to aan de studenten in betreffende klassen
 				for (String klas: klassen) {
@@ -246,7 +252,14 @@ public class PrIS {
 							for (Student s : k.getStudenten()) {
 								l.changePresentieLijst(s.getStudentNummer(), true);
 								s.addLes(l);
-								s.setBeschikbaarheid(l.getLesID(), true);
+
+//								l.changeStatusLijst(s.getStudentNummer(), false);
+								boolean beschikbaar = true;
+								if(l.getLesID() == 10 && String.format("%s",s.getStudentNummer()).contains("174")) {
+									beschikbaar = false;
+								}
+
+								s.setBeschikbaarheid(l.getLesID(), beschikbaar);
 							}
 						}
 					}
