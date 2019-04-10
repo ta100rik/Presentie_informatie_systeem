@@ -88,56 +88,56 @@
 
     <div class="my-title">Overzicht rooster van [[c_username]]</div>
     <table>
-      <tr>
+      <thead>
         <th class="datum">datum </th>
         <th class="tijd">tijd </th>
         <th class="naam">naam </th>
         <th class="lokaalnummer">lokaalnummer </th>
         <th class="afmelden">Afmelden</th>
+      </thead>
 
-      </tr>
-      <template is="dom-repeat" items="[[_c_lessen]]">
+      <template is="dom-repeat" items="{{_c_lessen}}" as="less">
+
         <tr>
-          <td class="datum"><a>[[item.startDag]] [[item.startDatum]]</a></td>
-          <td class="tijd"><a>[[item.startTijd]] - [[item.eindTijd]]</a></td>
-          <td class="naam">  <a>[[item.naam]]</a></td>
-          <td class="lokaalnummer"><a>[[item.lokaalnummer]]</a> </td>
-
+          <template is="dom-repeat" items="[[test(less)]]">
+            <!--<td><template is="dom-repeat" items="{{item}}">-->
+            <td>
+              {{item}}
+            </td>
+            <!--</template></td>-->
+          </template>
+          <td class="afmelden">
+            <paper-button on-click="show_afgemeld" class="custom red">Afmelden</paper-button>
+          </td>
         </tr>
-
-
-
-
       </template>
 
-      <tr>
-        <td class="datum"><a>Maandag 08-04</a></td>
-        <td class="tijd"><a>1300 - 1430</a></td>
-        <td class="naam">  <a>OODC</a></td>
-        <td class="lokaalnummer"><a>2.034</a> </td>
-        <td class="afmelden">
-          <paper-button on-click="show_afgemeld()" class="custom red">Afmelden</paper-button>
-        </td>
+      <!--<tr>-->
+        <!--<td class="datum"><a>Maandag 08-04</a></td>-->
+        <!--<td class="tijd"><a>1300 - 1430</a></td>-->
+        <!--<td class="naam">  <a>OODC</a></td>-->
+        <!--<td class="lokaalnummer"><a>2.034</a> </td>-->
+        <!--<td class="afmelden">-->
+          <!--<paper-button on-click="show_afgemeld()" class="custom red">Afmelden</paper-button>-->
+        <!--</td>-->
 
-      </tr>
-      <tr id="testdate">
-        <td class="datum"><a>Vrijdag 12-04</a></td>
-        <td class="tijd"><a>0830 - 1100</a></td>
-        <td class="naam">  <a>OODC</a></td>
-        <td class="lokaalnummer"><a>5.034</a> </td>
-        <td class="afmelden">
-          <paper-button on-click="show_afgemeld" class="custom red">Afmelden</paper-button>
-        </td>
-      </tr>
-      <tr>
-        <td class="datum"><a>Maandag 08-04-2019</a></td>
-        <td class="tijd"><a>1300 - 14300</a></td>
-        <td class="naam">  <a>OODC</a></td>
-        <td class="lokaalnummer"><a>2.034</a> </td>
-        <td class="afmelden">
-          <paper-button on-click="show_afgemeld" class="custom red">Afmelden</paper-button>
-        </td>
-      </tr>
+      <!--</tr>-->
+      <!--<tr id="testdate">-->
+        <!--<td class="datum"><a>Vrijdag 12-04</a></td>-->
+        <!--<td class="tijd"><a>0830 - 1100</a></td>-->
+        <!--<td class="naam">  <a>OODC</a></td>-->
+        <!--<td class="lokaalnummer"><a>5.034</a> </td>-->
+
+      <!--</tr>-->
+      <!--<tr>-->
+        <!--<td class="datum"><a>Maandag 08-04-2019</a></td>-->
+        <!--<td class="tijd"><a>1300 - 14300</a></td>-->
+        <!--<td class="naam">  <a>OODC</a></td>-->
+        <!--<td class="lokaalnummer"><a>2.034</a> </td>-->
+        <!--<td class="afmelden">-->
+          <!--<paper-button on-click="show_afgemeld" class="custom red">Afmelden</paper-button>-->
+        <!--</td>-->
+      <!--</tr>-->
     </table>
 
 
@@ -220,11 +220,21 @@
 
         _lesrooster_ophalen_response_handler: function(request) {
           // console.log("_lesrooster_ophalen_response_handler aantal studenten="+request.detail.response.length);
-          this._c_lessen = request.detail.response.rooster.rooster;
+          // this._c_lessen = request.detail.response.rooster.rooster;
           // console.log(this._c_lessen);
-          console.log(request.detail.response);
+          // console.log(request.detail.response);
+          this.set('_c_lessen',Object.entries(request.detail.response.rooster));
         },
+        test: function(element){
+          console.log(element);
+          var list = [];
+          list.push(element[1].startTijd.substring(0,10));
+          list.push(element[1].startTijd.substring(10,element[1].length));
+          list.push(element[1].lesNaam);
+          list.push(element[1].lokaal);
 
+          return list;
+        },
 
 
        _toast_clicked: function(e) {
