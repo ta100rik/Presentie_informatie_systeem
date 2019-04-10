@@ -9,7 +9,10 @@ import server.Handler;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +35,8 @@ public class StudentController implements Handler {
             returnStudent(conversation);
         } else if(conversation.getRequestedURI().startsWith("/student/presentie/ophalen")){
             returnStudentAanwezigheid(conversation);
+        } else if(conversation.getRequestedURI().startsWith("/student/presentie/afwezig")){
+            setAfgemeld(conversation);
         }
     }
     public void returnStudent(Conversation conversation){
@@ -64,30 +69,40 @@ public class StudentController implements Handler {
     }
     public void returnStudentAanwezigheid(Conversation conversation){
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-//        String userName = JsonObjIn.getString("userName");
-        String userName = "zyad.osseyran@student.hu.nl";
+        String userName = JsonObjIn.getString("userName");
+        Date huidigeDatum = new Date();
+        SimpleDateFormat format =  new SimpleDateFormat("yyyy/MM/dd hh:mm");
+        try{
+            huidigeDatum = format.parse(JsonObjIn.getString("datum"));
+        }catch (ParseException e){
+            conversation.sendJSONMessage(e.toString());
+            huidigeDatum = new Date("2019/02/20 16:00");
+        }
+//        String userName = "zyad.osseyran@student.hu.nl";
         Map<String, Integer> aanwezigheid = new HashMap<>();
         Map<String, Integer> totaal = new HashMap<>();
         JsonObjectBuilder returnObject = Json.createObjectBuilder();
 
         for(Student s: informatieSysteem.getDeStudenten()){
-            if(s.getGebruikersnaam().contains(userName)){
-                for(Les l: s.getRooster()){
-                    System.out.println(l.getLesCode()+l.getStartdatum());
-                    System.out.println(l.getStudentAanwezigheid(s.getStudentNummer()));
-                    boolean aanwezig = l.getStudentAanwezigheid(s.getStudentNummer());
-                    int aanwezigheidcounter = 0;
-                    int totaalcounter = 0;
-                    if(aanwezigheid.containsKey(l.getLesCode())) {
-                        aanwezigheidcounter = aanwezigheid.get(l.getLesCode());
-                        totaalcounter = totaal.get(l.getLesCode());
+            if(s.getGebruikersnaam().contains(userName)) {
+                for (Les l : s.getRooster()) {
+                    if (l.getStartdatum().before(huidigeDatum)) {
+                        System.out.println(l.getLesCode() + l.getStartdatum());
+                        System.out.println(l.getStudentAanwezigheid(s.getStudentNummer()));
+                        boolean aanwezig = l.getStudentAanwezigheid(s.getStudentNummer());
+                        int aanwezigheidcounter = 0;
+                        int totaalcounter = 0;
+                        if (aanwezigheid.containsKey(l.getLesCode())) {
+                            aanwezigheidcounter = aanwezigheid.get(l.getLesCode());
+                            totaalcounter = totaal.get(l.getLesCode());
+                        }
+                        if (aanwezig) {
+                            aanwezigheidcounter += 1;
+                        }
+                        totaalcounter += 1;
+                        totaal.put(l.getLesCode(), totaalcounter);
+                        aanwezigheid.put(l.getLesCode(), aanwezigheidcounter);
                     }
-                    if(aanwezig){
-                        aanwezigheidcounter+=1;
-                    }
-                    totaalcounter+=1;
-                    totaal.put(l.getLesCode(), totaalcounter);
-                    aanwezigheid.put(l.getLesCode(), aanwezigheidcounter);
                 }
             }
         }
@@ -105,5 +120,25 @@ public class StudentController implements Handler {
 
         String messageOut = returnObject.build().toString();
         conversation.sendJSONMessage(messageOut);
+    }
+
+    public void setAfgemeld(Conversation conversation){
+        JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
+        String userName = JsonObjIn.getString("userName");
+        boolean beschikbaar = JsonObjIn.getBoolean("beschikbaar");
+        int lesID = JsonObjIn.getInt("lesID");
+        boolean gelukt = false;
+        for(Student s: informatieSysteem.getDeStudenten()){
+            if(s.getGebruikersnaam().contains(userName)){
+                s.setBeschikbaarheid(lesID, beschikbaar);
+                gelukt = true;
+                break;
+            }
+        }
+        if(gelukt){
+            conversation.sendJSONMessage("afgemeld");
+        }else {
+            conversation.sendJSONMessage("afmelden niet gelukt");
+        }
     }
 }

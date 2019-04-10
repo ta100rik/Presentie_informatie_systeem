@@ -1,5 +1,7 @@
 package model.persoon;
 
+import model.klas.Klas;
+
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -81,6 +83,7 @@ public class Les {
         for(String k: klassen){
             alleklassen+=k.strip()+"; ";
         }
+
         JsonObjectBuilder presentieLijst = Json.createObjectBuilder();
         int index = 0;
         for(Map.Entry presentie : getPresentieLijst().entrySet()){
