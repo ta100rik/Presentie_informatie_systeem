@@ -193,7 +193,7 @@ public class LesController implements Handler {
         Date huidigeDatum = new Date();
         try{
             huidigeDatum = format.parse("2019-02-20 16:00");
-            //huidigeDatum =new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(lJsonObjIn.getString("datum"));
+            //huidigeDatum =format.parse(lJsonObjIn.getString("datum"));
         }catch (ParseException e){
             System.out.println(e);
         }

@@ -213,6 +213,7 @@ public class PrIS {
 				String[] element = line.split(cvsSplitBy);
 				Date startdate=new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(ConvertToNiceString(element[4])+" "+ConvertToNiceString(element[5]));
 				Date enddate=new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(ConvertToNiceString(element[7])+" "+ConvertToNiceString(element[8]));
+				String lokaal ="";
 				ArrayList<String> klassenarray = new ArrayList<>();
 				ArrayList<String> docentenarray = new ArrayList<>();
 
@@ -224,6 +225,9 @@ public class PrIS {
 					if(s.contains("TICT-") && !s.contains("_")){
 						klassenarray.add(s);
 					}
+					if(s.contains("(")){
+						lokaal = s;
+					}
 				}
 
 				String[] docenten = new String[docentenarray.size()];
@@ -232,7 +236,7 @@ public class PrIS {
 				klassen = klassenarray.toArray(klassen);
 
 				//maak les met alle docenten en klassen
-				Les l = new Les(element[1], element[0], docenten, klassen, startdate, enddate, element[12]);
+				Les l = new Les(element[1], element[0], docenten, klassen, startdate, enddate, lokaal);
 
 				//voeg les to aan de studenten in betreffende klassen
 				for (String klas: klassen) {
