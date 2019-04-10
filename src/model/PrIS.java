@@ -226,17 +226,18 @@ public class PrIS {
 						klassenarray.add(ConvertToNiceString(s));
 					}
 					if(s.contains("(")){
-						lokaal = s;
+						lokaal = ConvertToNiceString(s);
 					}
 				}
-
+				String lesCode = ConvertToNiceString(element[1]);
+				String lesNaam = ConvertToNiceString(element[0]);
 				String[] docenten = new String[docentenarray.size()];
 				docenten = docentenarray.toArray(docenten);
 				String[] klassen = new String[klassenarray.size()];
 				klassen = klassenarray.toArray(klassen);
 
 				//maak les met alle docenten en klassen
-				Les l = new Les(ConvertToNiceString(element[1]), ConvertToNiceString(element[0]), docenten, klassen, startdate, enddate, ConvertToNiceString(lokaal));
+				Les l = new Les(lesCode, lesNaam, docenten, klassen, startdate, enddate, lokaal);
 
 				//voeg les to aan de studenten in betreffende klassen
 				for (String klas: klassen) {
