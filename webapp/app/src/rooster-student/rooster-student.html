@@ -106,38 +106,13 @@
             </td>
             <!--</template></td>-->
           </template>
-          <td class="afmelden">
-            <paper-button on-click="show_afgemeld" class="custom red">Afmelden</paper-button>
+          <td class="afmelden" >
+            <paper-button on-click="show_afgemeld"  data-args="number" id="[[index]]" class="custom red" >Afmelden</paper-button>
           </td>
         </tr>
       </template>
 
-      <!--<tr>-->
-        <!--<td class="datum"><a>Maandag 08-04</a></td>-->
-        <!--<td class="tijd"><a>1300 - 1430</a></td>-->
-        <!--<td class="naam">  <a>OODC</a></td>-->
-        <!--<td class="lokaalnummer"><a>2.034</a> </td>-->
-        <!--<td class="afmelden">-->
-          <!--<paper-button on-click="show_afgemeld()" class="custom red">Afmelden</paper-button>-->
-        <!--</td>-->
 
-      <!--</tr>-->
-      <!--<tr id="testdate">-->
-        <!--<td class="datum"><a>Vrijdag 12-04</a></td>-->
-        <!--<td class="tijd"><a>0830 - 1100</a></td>-->
-        <!--<td class="naam">  <a>OODC</a></td>-->
-        <!--<td class="lokaalnummer"><a>5.034</a> </td>-->
-
-      <!--</tr>-->
-      <!--<tr>-->
-        <!--<td class="datum"><a>Maandag 08-04-2019</a></td>-->
-        <!--<td class="tijd"><a>1300 - 14300</a></td>-->
-        <!--<td class="naam">  <a>OODC</a></td>-->
-        <!--<td class="lokaalnummer"><a>2.034</a> </td>-->
-        <!--<td class="afmelden">-->
-          <!--<paper-button on-click="show_afgemeld" class="custom red">Afmelden</paper-button>-->
-        <!--</td>-->
-      <!--</tr>-->
     </table>
 
 
@@ -148,6 +123,13 @@
       url="/les/rooster/ophalen"
       handle-as="json"
       on-response="_lesrooster_ophalen_response_handler">
+    </iron-ajax>
+    <iron-ajax
+            id="ajax_student_gegevens"
+            method="POST"
+            url="/student/ophalen"
+            handle-as="json"
+            on-response="_studentinfo_resp">
     </iron-ajax>
 
 
@@ -183,10 +165,33 @@
                                                                    regel in de functie dat er niets gebeurd
                                                                    als c_visible false is */
           },
+          c_studentinfo: {
+            type: Array
+          }
+
         },
-        show_afgemeld:function() {
+        show_afgemeld:function(mouseclick) {
+          // console.log(mouseclick.path[2].attributes[0].value);
+          var selector =mouseclick.target.getAttribute('id');
+          mouseclick.target.disabled = true;
+          mouseclick.target.style = "background-color:grey;";
           var x = confirm("weet je zeker dat je wilt afmelden?");
-          console.log(x)
+          if(x){
+            var lesinfo = this._c_lessen[selector][1];
+            var studentid = this.c_studentinfo[0];
+
+            for(var i = 0;i < Object.keys(lesinfo.presentie).length;i++){
+              if(lesinfo.presentie[i].studentnummer == studentid[1]){
+                lesinfo.presentie[i].aanwezig = false;
+                this.notifyPath('this._c_lessen[selector][1].presentie[i].aanwezig');
+                // console.log(lesinfo.presentie[i]);
+                break;
+              }
+            }
+
+
+
+          }
         },
 
         _go_home: function() {
@@ -200,15 +205,26 @@
         _initializing : function() {
           if (this.c_visible) {                                 // zodra zichtbaar geworden moet er wat worden gedaan
             if (this.c_rol=="student") {                        // voor studenten
-              this._lesrooster_ophalen_request_handler();    //    haal info op van server
+              this._lesrooster_ophalen_request_handler();
+              this._studentinfo();//    haal info op van server
             }
           }
         },
-
+        _studentinfo: function (){
+          this.$.ajax_student_gegevens.contentType="application/json";
+          this.$.ajax_student_gegevens.body={
+            "userName":  this.c_username
+          };
+          this.$.ajax_student_gegevens.generateRequest();
+        },
+        _studentinfo_resp:function(response){
+           console.log();
+          this.set('c_studentinfo',Object.entries(response.detail.response));
+        },
         _lesrooster_ophalen_request_handler: function() {
           // console.log("_lesrooster_ophalen_request_handler user="+this.c_username);
           this.$.ajax_lesrooster_ophalen.contentType="application/json";
-          console.log(this.c_rol);
+          // console.log(this.c_rol);
           this.$.ajax_lesrooster_ophalen.body={
             "rol": this.c_rol,
             "username":  this.c_username
@@ -219,14 +235,10 @@
         },
 
         _lesrooster_ophalen_response_handler: function(request) {
-          // console.log("_lesrooster_ophalen_response_handler aantal studenten="+request.detail.response.length);
-          // this._c_lessen = request.detail.response.rooster.rooster;
-          // console.log(this._c_lessen);
-          // console.log(request.detail.response);
           this.set('_c_lessen',Object.entries(request.detail.response.rooster));
         },
         test: function(element){
-          console.log(element);
+          // console.log(element);
           var list = [];
           list.push(element[1].startTijd.substring(0,10));
           list.push(element[1].startTijd.substring(10,element[1].length));
