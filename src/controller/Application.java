@@ -50,7 +50,7 @@ public class Application {
 		server.registerHandler("/student/medestudenten/opslaan", medestudentenController);
 		server.registerHandler("/student/ophalen", studentController);
 		server.registerHandler("/student/presentie/ophalen", studentController);
-		server.registerHandler("/student/presentie/afwezig", studentController);
+		server.registerHandler("/student/presentie/setafmelden", studentController);
 
 		server.registerHandler("/klas/ophalen", klasController);
 
