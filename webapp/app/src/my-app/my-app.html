@@ -117,6 +117,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
     <!-- Main Toolbar -->
+
     <app-drawer-layout>
       <app-drawer slot="drawer">
         <!--  _ar_page bepaald welk menu geselecteerd is.
@@ -151,10 +152,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <span>Inloggen</span>
           </a>
 
-          <a name="logout" href$="[[_c_baseURL]]logout"  verborgen$="[[_are_strings_equal(_rol, 'undefined')]]">
-            <iron-icon icon="account-box"></iron-icon>
-            <span>Uitloggen</span>
-          </a>
 
           <!-- beschikbaar voor docent -->
 
@@ -164,31 +161,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <span>Toon profiel</span>
           </a>
 
-          <a name="docent_profiel" href$="[[_c_baseURL]]docent_profiel"  verborgen$="[[!_are_strings_equal(_rol, 'docent')]]">
-            <iron-icon icon="icons:account-circle"></iron-icon>
-            <span>Toon profiel</span>
-          </a>
+
 
           <a name="student_rooster" href$="[[_c_baseURL]]student_rooster"  verborgen$="[[!_are_strings_equal(_rol, 'student')]]">
             <iron-icon icon="icons:date-range"></iron-icon>
-            <span>Rooster student</span>
+            <span>Rooster</span>
           </a>
 
 
           <a name="docent_rooster" href$="[[_c_baseURL]]docent_rooster"  verborgen$="[[!_are_strings_equal(_rol, 'docent')]]">
             <iron-icon icon="icons:event"></iron-icon>
-            <span>Rooster docent</span>
+            <span>Rooster</span>
           </a>
 
 
           <a name="stat_docent" href$="[[_c_baseURL]]stat_docent"  verborgen$="[[!_are_strings_equal(_rol, 'docent')]]">
             <iron-icon icon="icons:event"></iron-icon>
-            <span>Statistiek docent</span>
+            <span>Statistiek</span>
           </a>
 
           <a name="student_medestudenten" href$="[[_c_baseURL]]student_medestudenten"  verborgen$="[[!_are_strings_equal(_rol, 'student')]]">
             <iron-icon icon="social:group"></iron-icon>
             <span>Toon medestudenten</span>
+          </a>
+          <a name="logout" href$="[[_c_baseURL]]logout"  verborgen$="[[_are_strings_equal(_rol, 'undefined')]]">
+            <iron-icon icon="account-box"></iron-icon>
+            <span>Uitloggen</span>
           </a>
 
         </iron-selector>
@@ -294,15 +292,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </section>
 
         <!-- sections voor student -->
-        <section page-name="docent_profiel"
-                 title="docent_profiel"
-                 element$="my-docentprofiel">
-
-          <my-docentprofiel c_visible="[[_are_strings_equal(_ar_page, 'docent_profiel')]]"
-                            c_rol="[[_rol]]"
-                            c_username="[[_username]]"></my-docentprofiel>
-          <!-- hier laad je content van de pagina -->
-        </section>
         <section page-name="student_profiel"
                  title="student_profiel"
                  element$="my-student_profiel">
