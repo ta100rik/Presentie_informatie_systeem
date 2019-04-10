@@ -78,6 +78,10 @@
 
             }
 
+            #student_pres tr td{
+                font-size: 15px;
+            }
+
 
         </style>
         <paper-toast
@@ -93,10 +97,28 @@
                 <div class="profiel">
                     <div class="row">
                         <div class="col-6">
-
+                            <paper-button id="test1" value="test1" on-click="test">OODC</paper-button><br>
+                            <paper-button id="test1" value="test1" on-click="test">AUI</paper-button><br>
+                            <paper-button id="test1" value="test1" on-click="test">GP</paper-button>
                         </div>
-                        <div class="col-6">
+                        <div class="col-6 row eachlesson">
+                            <table id="klas_id">
+                                <tr><td>TICT-SIE-V1D</td></tr>
+                                <tr><td>TICT-SIE-V1E</td></tr>
+                                <tr><td>TICT-SIE-V1B</td></tr>
+                                <tr><td>TICT-SIE-V1C</td></tr>
+                                <tr><td>TICT-SIE-V1B</td></tr>
+                                <tr><td>TICT-TI-V1D</td></tr>
+                                <tr><td>TICT-TI-V1D</td></tr>
+                                <tr><td>TICT-TI-V1B</td></tr>
+                                <tr><td>TICT-TI-V1V</td></tr>
+                                <tr><td>TICT-BIM-V1B</td></tr>
+                                <tr><td>TICT-BIM-V1C</td></tr>
+                                <tr><td>TICT-BIM-V1A</td></tr>
+                                <tr><td>TICT-BIM-V1D</td></tr>
 
+
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -105,7 +127,7 @@
             <div class="col-6 ">
                 <div class="row chartpresent">
                     <div class="col-6">
-                        <h4>Totalen afwezigheid:</h4>
+                        <h4>Totale afwezigheid:</h4>
                         <p>
                             Aanwezig: [[present]]<br>
                             Niet aanwezig: [[notpresent]]
@@ -118,15 +140,40 @@
                     </div>
                 </div>
                 <div class="row eachlesson">
-                    <template is="dom-repeat" items="{{lessonpresent}}" as="less">
-                        <div class="col-1">&nbsp;</div>
-                        <div class="col-6">
-                            [[less.vak]]
-                        </div>
-                        <div class="col-5">
-                            [[less.aanwezig]] %
-                        </div>
-                    </template>
+                    <!--<template is="dom-repeat" items="{{lessonpresent}}" as="less">-->
+                    <!--<div class="col-1">&nbsp;</div>-->
+                    <!--<div class="col-6">-->
+                    <!--[[less.vak]]-->
+                    <!--</div>-->
+                    <!--<div class="col-5">-->
+                    <!--[[less.aanwezig]] %-->
+                    <!--</div>-->
+                    <!--</template>-->
+                    <table id="student_pres">
+                        <tr><td>Houdijk Eric</td></tr>
+                        <tr><td>Chamoun Bashar</td></tr>
+                        <tr><td>Rijnders Thijs</td></tr>
+                        <tr><td>Goossens Michele</td></tr>
+                        <tr><td>Kastar Kastar</td></tr>
+                        <tr><td>Goes Kevin</td></tr>
+                        <tr><td>Tjaris Soerano</td></tr>
+                        <tr><td>Zhang Lida</td></tr>
+                        <tr><td>Hosman Étienne</td></tr>
+                        <tr><td>Rijk Damian</td></tr>
+                        <tr><td>Heiden Leon</td></tr>
+                        <tr><td>Houdijk Eric</td></tr>
+                        <tr><td>Chamoun Bashar</td></tr>
+                        <tr><td>Rijnders Thijs</td></tr>
+                        <tr><td>Goossens Michele</td></tr>
+                        <tr><td>Kastar Kastar</td></tr>
+                        <tr><td>Goes Kevin</td></tr>
+                        <tr><td>Tjaris Soerano</td></tr>
+                        <tr><td>Zhang Lida</td></tr>
+                        <tr><td>Hosman Étienne</td></tr>
+                        <tr><td>Rijk Damian</td></tr>
+                        <tr><td>Heiden Leon</td></tr>
+
+                    </table>
                 </div>
 
             </div>
@@ -192,7 +239,7 @@
                     console.log(this.c_rol);
                     if (this.c_visible) {                                 // zodra zichtbaar geworden moet er wat worden gedaan
                         if (this.c_rol=="docent") {                        // voor studenten
-                                //    haal info op van server
+                            //    haal info op van server
                             this._docent_ophalen_request_handler();
                             this._gemiddelde_presentie_request_handler();
                         } else {                                            // na handmatige url wijziging zonder login
@@ -200,6 +247,42 @@
                             lToast.open();                                    /* het sluiten van deze error verwijst  */
                             /* terug naar home page */
                         }
+                    }
+                },
+
+                test(e){
+
+                    var el = this.shadowRoot.getElementById('test').className;
+                    var el2 = this.shadowRoot.getElementById('test');
+                    var i;
+                    cosno
+                    for(i = 0; i < j; i++){
+                        console.log(DummyStudents[i].studentnum);
+                        if(DummyStudents[i].studentnum == studID){
+                            var index = i;
+                            break;
+                        }
+                        else{
+                            console.log("Student not in class");
+                        }
+
+                    }
+
+                    if(el == "presentbutton") {
+                        el2.classList.remove("presentbutton");
+                        el2.classList.add("absentbutton");
+                        DummyStudents[i].Absence = true;
+                        DummyStudents[i].present = false;
+
+                        console.log(DummyStudents[i]);
+
+                    } else {
+                        el2.classList.remove("absentbutton");
+                        el2.classList.add("presentbutton");
+                        DummyStudents[i].Absence = false;
+                        DummyStudents[i].present = true;
+
+                        console.log(DummyStudents[i])
                     }
                 },
                 _gemiddelde_presentie_request_handler: function() {
@@ -220,7 +303,7 @@
                     // console.log("_lesrooster_ophalen_request_handler user="+this.c_username);
                     this.$.ajax_docent_ophalen.contentType="application/json";
                     this.$.ajax_docent_ophalen.body={
-                        "username":  this.c_username
+                        "userName":  this.c_username
                     };
 
                     this.$.ajax_docent_ophalen.generateRequest();

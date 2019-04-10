@@ -82,44 +82,29 @@
 
         <div class="my-title">Overzicht rooster van [[c_username]]</div>
         <table>
-            <tr>
+            <thead>
                 <th class="datum">datum </th>
                 <th class="tijd">tijd </th>
                 <th class="naam">naam </th>
                 <th class="lokaalnummer">lokaalnummer </th>
-            </tr>
-            <template is="dom-repeat" items="[[_c_lessen]]">
-                <tr>
-                    <td class="datum"><a>[[item.startDag]] [[item.startDatum]]</a></td>
-                    <td class="tijd"><a>[[item.startTijd]] - [[item.eindTijd]]</a></td>
-                    <td class="naam">  <a>[[item.naam]]</a></td>
-                    <td class="lokaalnummer"><a>[[item.lokaalnummer]]</a> </td>
-                </tr>
-                <tr>
-                    <td class="datum"><a>Maandag 08-04-2019</a></td>
-                    <td class="tijd"><a>1300 - 14300</a></td>
-                    <td class="naam">  <a>OODC</a></td>
-                    <td class="lokaalnummer"><a>2.034</a> </td>
-                </tr>
-            </template>
-            <tr>
-                <td class="datum"><a>Maandag 08-04</a></td>
-                <td class="tijd"><a>1300 - 1430</a></td>
-                <td class="naam">  <a>OODC</a></td>
-                <td class="lokaalnummer"><a>2.034</a> </td>
-            </tr>
-            <tr>
-                <td class="datum"><a>Vrijdag 12-04</a></td>
-                <td class="tijd"><a>0830 - 1100</a></td>
-                <td class="naam">  <a>OODC</a></td>
-                <td class="lokaalnummer"><a>5.034</a> </td>
-            </tr>
-            <tr>
-                <td class="datum"><a>Maandag 08-04-2019</a></td>
-                <td class="tijd"><a>1300 - 14300</a></td>
-                <td class="naam">  <a>OODC</a></td>
-                <td class="lokaalnummer"><a>2.034</a> </td>
-            </tr>
+            </thead>
+           <tbody id="hi">
+           <template is="dom-repeat" items="{{_c_lessen}}" as="less">
+
+               <tr>
+                   <td class="datum"><a>[[test(less)]]</a></td>
+                   <td class="tijd"><a></a></td>
+                   <td class="naam">  <a></a></td>
+                   <td class="lokaalnummer"><a></a> </td>
+               </tr>
+           </template>
+           <!--<tr>-->
+               <!--<td class="datum"><a>Maandag 08-04-2019</a></td>-->
+               <!--<td class="tijd"><a>1300 - 14300</a></td>-->
+               <!--<td class="naam">  <a>OODC</a></td>-->
+               <!--<td class="lokaalnummer"><a>2.034</a> </td>-->
+           <!--</tr>-->
+           </tbody>
         </table>
 
         <iron-ajax
@@ -181,9 +166,20 @@
                         }
                     }
                 },
+                test: function(element){
+                    console.log(element);
+                    var html = '';
+                    html += '<tr>';
+                    html += '<td>' + element[1].lesID + '</td>';
+                    html += '<td>' + element[1].lesCode + '</td>';
+                    html += '<td>' + element[1].lesNaam + '</td>';
+                    html += '<td>' + element[1].docenten + '</td>';
+                    html += '</tr>';
+                    return html;
+                },
 
                 _lesrooster_ophalen_request_handler: function() {
-                    console.log("_lesrooster_ophalen_request_handler user="+this.c_username);
+                    // console.log("_lesrooster_ophalen_request_handler user="+this.c_username);
                     this.$.ajax_lesrooster_ophalen.contentType="application/json";
                     this.$.ajax_lesrooster_ophalen.body={
                         "rol": this.c_rol,
@@ -195,8 +191,10 @@
 
                 _lesrooster_ophalen_response_handler: function(request) {
                     console.log("_lesrooster_ophalen_response_handler aantal studenten="+request.detail.response);
-                    this._c_lessen = request.detail.response;
-                    console.log(this._c_lessen);
+                    // this._c_lessen = ;
+                    // this._c_lessen = this._c_lessen.rooster;
+                    // console.log(Object.entries(request.detail.response.rooster));
+                    this.set('_c_lessen',Object.entries(request.detail.response.rooster));
                 },
 
 
