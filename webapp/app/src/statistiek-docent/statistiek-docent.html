@@ -1,0 +1,246 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<!-- Dit element wordt door de aanwezigheid van de c_visible parameter steeds opnieuw gerefreshed
+     op het moment dat het element in de iron-pages geselecteerd wordt
+     en ook zodra hij weer gedeselecteerd wordt.
+     Deze techniek is bruikbaar om volatile info steeds opnieuw op te halen en niet enkel eenmalig
+     bij start van de applicatie.
+-->
+
+<dom-module id="statistiek-docent">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+            :host > * {
+                --paper-input-container-focus-color: #1a9fd9; /* kind of blue */
+            }
+
+            .row::after {
+                content: "";
+                clear: both;
+                display: table;
+            }
+
+            [class*="col-"] {
+                float: left;
+            }
+
+            .col-1 {width: 8.33%;}
+            .col-2 {width: 16.66%;}
+            .col-3 {width: 25%;}
+            .col-4 {width: 33.33%;}
+            .col-5 {width: 41.66%;}
+            .col-6 {width: 50%;}
+            .col-7 {width: 58.33%;}
+            .col-8 {width: 66.66%;}
+            .col-9 {width: 75%;}
+            .col-10 {width: 83.33%;}
+            .col-11 {width: 91.66%;}
+            .col-12 {width: 100%;}
+
+            #studentface{
+                width:75px;
+
+            }
+            .profiel{
+                font-size:20px;
+                height: calc(100vh - 106px);
+                border-right: solid black 1px;
+                overflow:hidden;
+                padding-top:50px;
+                padding-left:100px;
+            }
+            .namebox{
+                height: 75px;
+                line-height: 75px;
+            }
+            .center-text{
+                height: 30px;
+                line-height: 30px;
+            }
+            .chartpresent{
+                padding:20px;
+                font-size:20px;
+                border-bottom: solid black 1px;
+            }
+            .eachlesson{
+                overflow-y:scroll;
+                padding-top:50px;
+                height: 300px;
+                font-size:20px;
+
+            }
+
+
+        </style>
+        <paper-toast
+                id="toast_invalid_aanroep"
+                duration="0"
+                text="U hebt dit scherm op een illegale manier geactiveerd. U wordt verwezen naar de home page!">
+            <paper-button on-click="_toast_clicked" class="toast-button">Sluiten</paper-button>
+        </paper-toast>
+
+
+        <div class="row">
+            <div class="col-6">
+                <div class="profiel">
+                    <div class="row">
+                        <div class="col-6">
+
+                        </div>
+                        <div class="col-6">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 ">
+                <div class="row chartpresent">
+                    <div class="col-6">
+                        <h4>Totalen afwezigheid:</h4>
+                        <p>
+                            Aanwezig: [[present]]<br>
+                            Niet aanwezig: [[notpresent]]
+                        </p>
+                    </div>
+                    <div class="col-6">
+                        <div class="chart">
+                            <svg-piechart id="presentchart" size="250" colors='["#10f241","#f10f0f"]' data="[60,40]"></svg-piechart>
+                        </div>
+                    </div>
+                </div>
+                <div class="row eachlesson">
+                    <template is="dom-repeat" items="{{lessonpresent}}" as="less">
+                        <div class="col-1">&nbsp;</div>
+                        <div class="col-6">
+                            [[less.vak]]
+                        </div>
+                        <div class="col-5">
+                            [[less.aanwezig]] %
+                        </div>
+                    </template>
+                </div>
+
+            </div>
+        </div>
+
+        <!--      /les/gemiddeldepresentie/ophalen     -->
+        <iron-ajax
+                id="ajax_docent_ophalen"
+                method="POST"
+                url="/docent/ophalen"
+                handle-as="json"
+                on-response="_docent_ophalen_response_handler">
+        </iron-ajax>
+        <iron-ajax
+                id="ajax_gemiddelde_presentie"
+                method="POST"
+                url="/les/gemiddeldepresentie/ophalen"
+                handle-as="json"
+                on-response="_gemiddelde_presentie_ophalen_response_handler">
+        </iron-ajax>
+    </template>
+    <script>
+        (function() {
+            'use strict';
+            /* _xxxx private              : geen external data binding      - geen notify
+               _c_xx private constant     : geen external binding, constant - geen notify
+               c_xx  public constant      : one way external databinding [[c_xx]] - geen notify nodig
+               xxxx  public               : two way external databinding {{xxxx}} - notify nodig
+            */
+            Polymer({
+                is: 'statistiek-docent',
+
+                properties: {
+                    _c_lessen: {
+                        type: Array,           /* array<student-info>: student-info = {id, firstName, lastName, sameGroup}
+										array is constant groepnr is changable */
+                    },
+                    c_rol: {
+                        type: String,
+                    },
+                    c_username: {
+                        type: String,
+                    },
+                    c_visible: {
+                        type: Boolean,                                      /* true when element is the active visible item */
+                        value: false,
+                        observer: '_initializing',                          /* wordt ook aangeroepen bijwisseling van true naar false.
+                                                                   regel in de functie dat er niets gebeurd
+                                                                   als c_visible false is */
+                    },
+                },
+
+                _go_home: function() {
+                    var lApp = document.querySelector('my-app');  //het polymer element <my-app>
+                    var lAppRouter = lApp.$.approuter;            // het html-element <app-route> met id=approuter
+                    lAppRouter.data={page: ""};                   // vul het data attribute met de homepage url
+                                                                  // door de two way binding in <app-route> en <app-location>
+                                                                  // zal ook de url echt wijzigen
+                },
+
+                _initializing : function() {
+                    console.log(this.c_visible);
+                    console.log(this.c_rol);
+                    if (this.c_visible) {                                 // zodra zichtbaar geworden moet er wat worden gedaan
+                        if (this.c_rol=="docent") {                        // voor studenten
+                                //    haal info op van server
+                            this._docent_ophalen_request_handler();
+                            this._gemiddelde_presentie_request_handler();
+                        } else {                                            // na handmatige url wijziging zonder login
+                            var lToast = this.$.toast_invalid_aanroep;        // meldt ongeldige aanroep
+                            lToast.open();                                    /* het sluiten van deze error verwijst  */
+                            /* terug naar home page */
+                        }
+                    }
+                },
+                _gemiddelde_presentie_request_handler: function() {
+                    // console.log("_lesrooster_ophalen_request_handler user="+this.c_username);
+                    this.$.ajax_gemiddelde_presentie.contentType="application/json";
+                    this.$.ajax_gemiddelde_presentie.body={
+                        "rol": this.c_rol,
+                        "username":  this.c_username
+                    };
+
+                    this.$.ajax_gemiddelde_presentie.generateRequest();
+                },
+                _gemiddelde_presentie_ophalen_response_handler:function(request) {
+                    console.log(request.detail.response);
+
+                },
+                _docent_ophalen_request_handler: function() {
+                    // console.log("_lesrooster_ophalen_request_handler user="+this.c_username);
+                    this.$.ajax_docent_ophalen.contentType="application/json";
+                    this.$.ajax_docent_ophalen.body={
+                        "username":  this.c_username
+                    };
+
+                    this.$.ajax_docent_ophalen.generateRequest();
+                },
+                _docent_ophalen_response_handler: function(request) {
+                    // console.log("_lesrooster_ophalen_response_handler aantal studenten="+request.detail.response);
+                    var rooster = request.detail.response.rooster;
+                    console.log(Object.keys(rooster).length);
+                    for(var i = 0;i < Object.keys(rooster).length;i++){
+                        console.log(rooster[i]);
+                    }
+                },
+
+                _toast_clicked: function(e) {
+                    var lToast = this.$.toast_invalid_aanroep;        // meldt ongeldige aanroep
+                    lToast.toggle();
+                    this._go_home();
+                },
+
+            });
+        })();
+    </script>
+</dom-module>

@@ -1,0 +1,239 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<!-- Dit element wordt door de aanwezigheid van de c_visible parameter steeds opnieuw gerefreshed
+     op het moment dat het element in de iron-pages geselecteerd wordt
+     en ook zodra hij weer gedeselecteerd wordt.
+     Deze techniek is bruikbaar om volatile info steeds opnieuw op te halen en niet enkel eenmalig
+     bij start van de applicatie.
+-->
+
+<dom-module id="rooster-student">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      :host > * {
+        --paper-input-container-focus-color: #1a9fd9; /* kind of blue */
+      }
+
+      span {
+        @apply --paper-font-body1;
+      }
+      .toast-button {
+        text-transform: none;
+        color: white;                           /* white tekst */
+        background: #1a9fd9;                    /* kind of blue */
+        --paper-button-ink-color: #00567B;      /* kind of dark blue */
+      }
+      .my-title {
+        font-size: 20px;
+        color: blue;
+        border-bottom: 1px solid red;           /* a red line */
+        padding-bottom: 2px;                    /* space above the border line */
+      }
+      .naam {
+        text-align: left;
+       }
+       .datum {
+         text-align: left;
+        }
+        .tijd {
+          text-align: left;
+         }
+        .lokaalnummer {
+          text-align: left;
+        }
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 80%;
+        }
+
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+      .my-button {
+        width: 100%;                        /* full width */
+        color: white;                       /* white tekst */
+        background: #1a9fd9;                /* kind of blue */
+        --paper-button-ink-color: #00567B;  /* kind of dark blue */
+        margin-top: 5px;                    /* enlarge thet default */
+        margin-left: 0px;                   /* reduce the default */
+      }
+
+      .red {
+        background-color: red;
+        color: #FFFFFF;
+        margin: 0 auto;
+      }
+    </style>
+    <paper-toast
+      id="toast_invalid_aanroep"
+      duration="0"
+      text="U hebt dit scherm op een illegale manier geactiveerd. U wordt verwezen naar de home page!">
+        <paper-button on-click="_toast_clicked" class="toast-button">Sluiten</paper-button>
+    </paper-toast>
+
+    <div class="my-title">Overzicht rooster van [[c_username]]</div>
+    <table>
+      <tr>
+        <th class="datum">datum </th>
+        <th class="tijd">tijd </th>
+        <th class="naam">naam </th>
+        <th class="lokaalnummer">lokaalnummer </th>
+        <th class="afmelden">Afmelden</th>
+
+      </tr>
+      <template is="dom-repeat" items="[[_c_lessen]]">
+        <tr>
+          <td class="datum"><a>[[item.startDag]] [[item.startDatum]]</a></td>
+          <td class="tijd"><a>[[item.startTijd]] - [[item.eindTijd]]</a></td>
+          <td class="naam">  <a>[[item.naam]]</a></td>
+          <td class="lokaalnummer"><a>[[item.lokaalnummer]]</a> </td>
+
+        </tr>
+
+
+
+
+      </template>
+
+      <tr>
+        <td class="datum"><a>Maandag 08-04</a></td>
+        <td class="tijd"><a>1300 - 1430</a></td>
+        <td class="naam">  <a>OODC</a></td>
+        <td class="lokaalnummer"><a>2.034</a> </td>
+        <td class="afmelden">
+          <paper-button on-click="show_afgemeld()" class="custom red">Afmelden</paper-button>
+        </td>
+
+      </tr>
+      <tr id="testdate">
+        <td class="datum"><a>Vrijdag 12-04</a></td>
+        <td class="tijd"><a>0830 - 1100</a></td>
+        <td class="naam">  <a>OODC</a></td>
+        <td class="lokaalnummer"><a>5.034</a> </td>
+        <td class="afmelden">
+          <paper-button on-click="show_afgemeld" class="custom red">Afmelden</paper-button>
+        </td>
+      </tr>
+      <tr>
+        <td class="datum"><a>Maandag 08-04-2019</a></td>
+        <td class="tijd"><a>1300 - 14300</a></td>
+        <td class="naam">  <a>OODC</a></td>
+        <td class="lokaalnummer"><a>2.034</a> </td>
+        <td class="afmelden">
+          <paper-button on-click="show_afgemeld" class="custom red">Afmelden</paper-button>
+        </td>
+      </tr>
+    </table>
+
+
+
+    <iron-ajax
+      id="ajax_lesrooster_ophalen"
+      method="POST"
+      url="/les/rooster/ophalen"
+      handle-as="json"
+      on-response="_lesrooster_ophalen_response_handler">
+    </iron-ajax>
+
+
+
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+      /* _xxxx private              : geen external data binding      - geen notify
+         _c_xx private constant     : geen external binding, constant - geen notify
+         c_xx  public constant      : one way external databinding [[c_xx]] - geen notify nodig
+         xxxx  public               : two way external databinding {{xxxx}} - notify nodig
+      */
+      Polymer({
+        is: 'rooster-student',
+
+        properties: {
+          _c_lessen: {
+            type: Array,           /* array<student-info>: student-info = {id, firstName, lastName, sameGroup}
+										array is constant groepnr is changable */
+          },
+          c_rol: {
+            type: String,
+          },
+          c_username: {
+            type: String,
+          },
+          c_visible: {
+            type: Boolean,                                      /* true when element is the active visible item */
+            value: false,
+            observer: '_initializing',                          /* wordt ook aangeroepen bijwisseling van true naar false.
+                                                                   regel in de functie dat er niets gebeurd
+                                                                   als c_visible false is */
+          },
+        },
+        show_afgemeld:function() {
+          var x = confirm("weet je zeker dat je wilt afmelden?");
+          console.log(x)
+        },
+
+        _go_home: function() {
+          var lApp = document.querySelector('my-app');  //het polymer element <my-app>
+          var lAppRouter = lApp.$.approuter;            // het html-element <app-route> met id=approuter
+          lAppRouter.data={page: ""};                   // vul het data attribute met de homepage url
+                                                        // door de two way binding in <app-route> en <app-location>
+                                                        // zal ook de url echt wijzigen
+        },
+
+        _initializing : function() {
+          if (this.c_visible) {                                 // zodra zichtbaar geworden moet er wat worden gedaan
+            if (this.c_rol=="student") {                        // voor studenten
+              this._lesrooster_ophalen_request_handler();    //    haal info op van server
+            }
+          }
+        },
+
+        _lesrooster_ophalen_request_handler: function() {
+          // console.log("_lesrooster_ophalen_request_handler user="+this.c_username);
+          this.$.ajax_lesrooster_ophalen.contentType="application/json";
+          console.log(this.c_rol);
+          this.$.ajax_lesrooster_ophalen.body={
+            "rol": this.c_rol,
+            "username":  this.c_username
+          };
+
+          // console.log(this.$.ajax_lesrooster_ophalen);
+          this.$.ajax_lesrooster_ophalen.generateRequest();
+        },
+
+        _lesrooster_ophalen_response_handler: function(request) {
+          // console.log("_lesrooster_ophalen_response_handler aantal studenten="+request.detail.response.length);
+          this._c_lessen = request.detail.response.rooster.rooster;
+          // console.log(this._c_lessen);
+          console.log(request.detail.response);
+        },
+
+
+
+       _toast_clicked: function(e) {
+         var lToast = this.$.toast_invalid_aanroep;        // meldt ongeldige aanroep
+         lToast.toggle();
+         this._go_home();
+        },
+
+      });
+    })();
+  </script>
+</dom-module>
