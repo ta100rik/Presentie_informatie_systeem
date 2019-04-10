@@ -45,9 +45,12 @@ public class Application {
 		server.registerHandler("/systeemdatum/lesinfo", systeemDatumController);
 
 		server.registerHandler("/login", loginController);
-//		server.registerHandler("/student/rooster", myroostercontroller);
+
 		server.registerHandler("/student/medestudenten/ophalen", medestudentenController);
 		server.registerHandler("/student/medestudenten/opslaan", medestudentenController);
+		server.registerHandler("/student/ophalen", studentController);
+		server.registerHandler("/student/presentie/ophalen", studentController);
+		server.registerHandler("/student/presentie/afwezig", studentController);
 
 		server.registerHandler("/klas/ophalen", klasController);
 
@@ -55,8 +58,7 @@ public class Application {
 		server.registerHandler("/les/rooster/ophalen", lesController);
 		server.registerHandler("/les/gemiddeldepresentie/ophalen", lesController);
 		server.registerHandler("/les/setPresentie", lesController);
-		server.registerHandler("/student/ophalen", studentController);
-		server.registerHandler("/student/presentie/ophalen", studentController);
+
 
 		server.registerHandler("/docent/ophalen", docentController);
 		server.start();
