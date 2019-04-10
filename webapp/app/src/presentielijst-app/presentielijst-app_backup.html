@@ -2,19 +2,6 @@
 <link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-styles/typography.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
-
-<!-- Dit element wordt door de aanwezigheid van de c_visible parameter steeds opnieuw gerefreshed
-     op het moment dat het element in de iron-pages geselecteerd wordt
-     en ook zodra hij weer gedeselecteerd wordt.
-     Deze techniek is bruikbaar om volatile info steeds opnieuw op te halen en niet enkel eenmalig
-     bij start van de applicatie.
--->
 
 <dom-module id="presentielijst-app">
     <template>
@@ -22,9 +9,7 @@
             :host {
                 display: block;
             }
-            :host > * {
-                --paper-input-container-focus-color: #1a9fd9; /* kind of blue */
-            }
+
             /* default container */
             #container{
                 height: 100%;
@@ -49,7 +34,7 @@
             #presentielijst th{
                 width: 25%;
                 height: 40px;
-                background:#1a9fd9;
+                background:#5B9BD5;
                 color: white;
             }
 
@@ -59,7 +44,7 @@
                 width: 25%;
                 height: 30px;
                 text-align: center;
-                border: 1px solid #1a9fd9;
+                border: 1px solid #5B9BD5;
                 color: black;
             }
 
@@ -101,7 +86,7 @@
                 width: 100%;
                 height: 30px;
                 position: absolute;
-                background:#1a9fd9;
+                background:#5B9BD5;
             }
 
             /* Commpletion button styling */
@@ -123,23 +108,15 @@
             }
         </style>
 
+        <div id = "container">
 
             <!-- Create table -->
             <table id="presentielijst">
 
                 <!-- Table header -->
-                <thead>
-                    <th on-click="datas">Naam</th>
-                    <th>Achternaam</th>
-                    <th>Studentnummer</th>
-                    <th>Present</th>
-                </thead>
-                <tbody>
-
-
+                <tr><th>Naam</th><th>Achternaam</th><th>Studentnummer</th><th>Present</th><th>Afwezig</th></tr>
 
                 <!-- Fill table with data -->
-
                 <template is="dom-repeat" items="{{DummyStudents}}" as="Student">
                     <tr id="[[Student.studentnum]]">
                         <td>[[Student.name]]</td>
@@ -160,33 +137,30 @@
                     </tr>
                     <!-- end of row -->
                 </template>
-                </tbody>
             </table>
             <!-- End of table  -->
 
             <!-- Wrap-up div -->
             <div id="WrapUpDiv"><button id="WrapUp" on-click="WrapUpHandler">Afronden</button></div>
-
+        </div>
 
         <!-- End of container -->
-
 
 
 
     </template>
 
     <script>
-        (function() {
-            'use strict';
-            /* _xxxx private              : geen external data binding      - geen notify
-               _c_xx private constant     : geen external binding, constant - geen notify
-               c_xx  public constant      : one way external databinding [[c_xx]] - geen notify nodig
-               xxxx  public               : two way external databinding {{xxxx}} - notify nodig
-            */
-            Polymer({
-                is: 'presentielijst-app',
 
-                properties: {
+
+        /**
+         * @customElement
+         * @polymer
+         */
+        class PresentielijstApp extends Polymer.Element {
+            static get is() { return 'presentielijst-app'; }
+            static get properties() {
+                return {
                     DummyStudents: {
                         type: Array,
                         value: [
@@ -209,91 +183,67 @@
                             {name : "Jerry", surname : "Nurse", studentnum : 978943, present : false, Absence :  true},
                             {name : "Amiee", surname : "Belgarde", studentnum : 213120, present : true, Absence :  false}
                         ]
-                    },
-                    c_rol: {
-                        type: String,
-                    },
-                    c_username: {
-                        type: String,
-                    },
-                    c_visible: {
-                        type: Boolean,                                      /* true when element is the active visible item */
-                        value: false,
-                        observer: '_initializing',                          /* wordt ook aangeroepen bijwisseling van true naar false.
-                                                                   regel in de functie dat er niets gebeurd
-                                                                   als c_visible false is */
-                    },
-                },
-                _initializing : function() {
-                        console.log(this.c_visible);
-
-                        console.log(this.c_rol);
-                    if (this.c_visible) {                                 // zodra zichtbaar geworden moet er wat worden gedaan
-                        if (this.c_rol=="docent") {                        // voor studenten
-                            // this._lesrooster_ophalen_request_handler();    //    haal info op van server
-                        } else {                                            // na handmatige url wijziging zonder login
-                           this._go_home();                                  /* het sluiten van deze error verwijst  */                                                  /* terug naar home page */
-                        }
                     }
-                },
-                datas: function(e){
+                };
+            }
 
-                    var lApp = document.querySelector('my-app');
-                    console.log(lApp._les_id);
-                },
 
-                test: function(e){
-                    var DummyStudents = this.get(['DummyStudents']);
-                    let studID = e.currentTarget.value;
-                    console.log(studID)
+            test(e){
+                var DummyStudents = this.get(['DummyStudents']);
+                let studID = e.currentTarget.value;
+                console.log(studID)
 
-                    var el = this.shadowRoot.getElementById(studID+'test').className;
-                    var el2 = this.shadowRoot.getElementById(studID+'test')
-                    var j = DummyStudents.length;
-                    var i;
+                var el = this.shadowRoot.getElementById(studID+'test').className;
+                var el2 = this.shadowRoot.getElementById(studID+'test')
+                var j = DummyStudents.length;
+                var i;
 
-                    for(i = 0; i < j; i++){
-                        console.log(DummyStudents[i].studentnum);
-                        if(DummyStudents[i].studentnum == studID){
-                            var index = i;
-                            break;
-                        }
-                        else{
-                            console.log("Student not in class");
-                        }
-
+                for(i = 0; i < j; i++){
+                    console.log(DummyStudents[i].studentnum);
+                    if(DummyStudents[i].studentnum == studID){
+                        var index = i;
+                        break;
+                    }
+                    else{
+                        console.log("Student not in class");
                     }
 
-                    if(el == "presentbutton") {
-                        el2.classList.remove("presentbutton");
-                        el2.classList.add("absentbutton");
-                        DummyStudents[i].Absence = true;
-                        DummyStudents[i].present = false;
+                }
 
-                        console.log(DummyStudents[i]);
+                if(el == "presentbutton") {
+                    el2.classList.remove("presentbutton");
+                    el2.classList.add("absentbutton");
+                    DummyStudents[i].Absence = true;
+                    DummyStudents[i].present = false;
 
-                    } else {
-                        el2.classList.remove("absentbutton");
-                        el2.classList.add("presentbutton");
-                        DummyStudents[i].Absence = false;
-                        DummyStudents[i].present = true;
+                    console.log(DummyStudents[i]);
 
-                        console.log(DummyStudents[i])
-                    }
+                } else {
+                    el2.classList.remove("absentbutton");
+                    el2.classList.add("presentbutton");
+                    DummyStudents[i].Absence = false;
+                    DummyStudents[i].present = true;
 
-                },
+                    console.log(DummyStudents[i])
+                }
+            }
 
-                _go_home: function() {
-                    var lApp = document.querySelector('my-app');  //het polymer element <my-app>
-                    var lAppRouter = lApp.$.approuter;            // het html-element <app-route> met id=approuter
-                    lAppRouter.data={page: ""};                   // vul het data attribute met de homepage url
-                                                                  // door de two way binding in <app-route> en <app-location>
-                                                                  // zal ook de url echt wijzigen
-                },
+            //handle wrap-up
+            WrapUpHandler(){
+                //send list to backend?
+                //prompt user to confirm
+                var c = confirm("Afronden");
+                if(c == true){
+                    //do stuff
+                    alert("Userdata saved");
+                }
+                else{
+                    alert("Abort mission");
+                }
+            }
+        }
 
-
-            });
-        })();
+        window.customElements.define(PresentielijstApp.is, PresentielijstApp);
     </script>
 </dom-module>
 
