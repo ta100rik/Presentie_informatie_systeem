@@ -234,9 +234,13 @@ public class PrIS {
 				docenten = docentenarray.toArray(docenten);
 				String[] klassen = new String[klassenarray.size()];
 				klassen = klassenarray.toArray(klassen);
+//				for(String s: klassenarray){
+//					String klas = ConvertToNiceString(s);
+//					klassenarray.
+//				}
 
 				//maak les met alle docenten en klassen
-				Les l = new Les(element[1], element[0], docenten, klassen, startdate, enddate, lokaal);
+				Les l = new Les(ConvertToNiceString(element[1]), ConvertToNiceString(element[0]), docenten, klassen, startdate, enddate, ConvertToNiceString(lokaal));
 
 				//voeg les to aan de studenten in betreffende klassen
 				for (String klas: klassen) {

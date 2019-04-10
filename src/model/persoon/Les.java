@@ -76,10 +76,10 @@ public class Les {
         String alledocenten ="";
         String alleklassen ="";
         for(String d: docenten){
-            alledocenten+=d+"; ";
+            alledocenten+=d.strip()+"; ";
         }
         for(String k: klassen){
-            alleklassen+=k+"; ";
+            alleklassen+=k.strip()+"; ";
         }
         JsonObjectBuilder presentieLijst = Json.createObjectBuilder();
         int index = 0;
