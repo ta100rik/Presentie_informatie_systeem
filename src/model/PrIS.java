@@ -352,6 +352,7 @@ public class PrIS {
 		}
 		return VakPresentieNr;
 	}
+
 	public JsonObject vakPresentieNaam(Map<Integer, JsonObject> vakPresentieNr, int studentnr){
 		//convert Student nr to student name for message back'
 		JsonObjectBuilder NaamEnAanwezigheid = Json.createObjectBuilder();

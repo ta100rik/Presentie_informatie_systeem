@@ -56,6 +56,7 @@ public class Application {
 		server.registerHandler("/les/gemiddeldepresentie/ophalen", lesController);
 		server.registerHandler("/les/setPresentie", lesController);
 		server.registerHandler("/student/ophalen", studentController);
+		server.registerHandler("/student/presentie/ophalen", studentController);
 
 		server.registerHandler("/docent/ophalen", docentController);
 		server.start();
