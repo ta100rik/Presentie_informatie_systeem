@@ -9,6 +9,9 @@ import server.Handler;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StudentController implements Handler {
     private PrIS informatieSysteem;
@@ -27,6 +30,8 @@ public class StudentController implements Handler {
     public void handle(Conversation conversation) {
         if (conversation.getRequestedURI().startsWith("/student/ophalen")) {
             returnStudent(conversation);
+        } else if(conversation.getRequestedURI().startsWith("/student/presentie/ophalen")){
+            returnStudentAanwezigheid(conversation);
         }
     }
     public void returnStudent(Conversation conversation){
@@ -55,8 +60,50 @@ public class StudentController implements Handler {
 
         }
         String messageOut = studentbuilder.build().toString();
-
         conversation.sendJSONMessage(messageOut);
+    }
+    public void returnStudentAanwezigheid(Conversation conversation){
+        JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
+//        String userName = JsonObjIn.getString("userName");
+        String userName = "zyad.osseyran@student.hu.nl";
+        Map<String, Integer> aanwezigheid = new HashMap<>();
+        Map<String, Integer> totaal = new HashMap<>();
+        JsonObjectBuilder returnObject = Json.createObjectBuilder();
 
+        for(Student s: informatieSysteem.getDeStudenten()){
+            if(s.getGebruikersnaam().contains(userName)){
+                for(Les l: s.getRooster()){
+                    System.out.println(l.getLesCode()+l.getStartdatum());
+                    System.out.println(l.getStudentAanwezigheid(s.getStudentNummer()));
+                    boolean aanwezig = l.getStudentAanwezigheid(s.getStudentNummer());
+                    int aanwezigheidcounter = 0;
+                    int totaalcounter = 0;
+                    if(aanwezigheid.containsKey(l.getLesCode())) {
+                        aanwezigheidcounter = aanwezigheid.get(l.getLesCode());
+                        totaalcounter = totaal.get(l.getLesCode());
+                    }
+                    if(aanwezig){
+                        aanwezigheidcounter+=1;
+                    }
+                    totaalcounter+=1;
+                    totaal.put(l.getLesCode(), totaalcounter);
+                    aanwezigheid.put(l.getLesCode(), aanwezigheidcounter);
+                }
+            }
+        }
+        for(Map.Entry entry: totaal.entrySet()){
+            String lescode = entry.getKey().toString();
+            System.out.println(lescode);
+            int aanwezig = aanwezigheid.get(entry.getKey().toString());
+            int totaalaantal = Integer.parseInt(entry.getValue().toString());
+            System.out.println(aanwezig+"||");
+            System.out.println(totaalaantal);
+            if(!lescode.contains("TOETS")) {
+                returnObject.add(lescode, aanwezig / totaalaantal * 100);
+            }
+        }
+
+        String messageOut = returnObject.build().toString();
+        conversation.sendJSONMessage(messageOut);
     }
 }

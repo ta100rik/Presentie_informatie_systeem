@@ -180,7 +180,7 @@
 
                     list.push(element[1].startTijd.substring(0,10));
                     list.push(element[1].startTijd.substring(10,element[1].length));
-                    list.push((element[1].lesNaam).replace("\"","").substring(0,element[1].lesNaam.length-2));
+                    list.push((element[1].lesNaam).replace("\"",""));//.substring(0,element[1].lesNaam.length-2));
                     list.push(element[1].lokaal);
 
                     return list;
