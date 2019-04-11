@@ -254,6 +254,7 @@
         ophalen_les_student: function() {
           // console.log("_medestudenten_ophalen_request_handler user="+this.c_username);
           var lApp = document.querySelector('my-app');
+
           this.$.ajax_student_les.contentType="application/json";
           this.$.ajax_student_les.body={
             "userName":this.c_username,
