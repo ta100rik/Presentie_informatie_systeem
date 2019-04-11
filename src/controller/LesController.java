@@ -64,31 +64,18 @@ public class LesController implements Handler {
      */
     private void returnLes(Conversation conversation) {
         JsonObject lJsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-
         int lesID =lJsonObjIn.getInt("lesID");                      //Should be integer
-//        int lesID=10;
-
         JsonObjectBuilder sJsonObjectBuilder = Json.createObjectBuilder();
         //voeg alle attributen toe
-
         for(Les l : informatieSysteem.getDeLessen()){
-//            StringBuilder docenten = new StringBuilder();
-//            StringBuilder klassen = new StringBuilder();
-//            for(String d: l.getDocenten()){
-//                docenten.append(d+"; ");
-//            }
-//            for (String k: l.getKlassen()){
-//                klassen.append(k+"; ");
-//            }
             if(lesID == l.getLesID()) {
                 sJsonObjectBuilder.add("les", l.returnAsJson());
             }
         }
         String lJsonOut = sJsonObjectBuilder.build().toString();
-//        System.out.println(lJsonOut);
         conversation.sendJSONMessage(lJsonOut); // terugsturen naar de Polymer-GUI!
     }
-
+    //requites integer lesID and JsonObj presentie
     private void setLesPresentie(Conversation conversation){
         JsonObject lJsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
         Integer lesID = lJsonObjIn.getInt("lesID");

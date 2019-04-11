@@ -95,15 +95,18 @@ public class StudentController implements Handler {
     }
     public void returnStudentAanwezigheid(Conversation conversation){
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
+        System.out.println(JsonObjIn.toString());
         String userName = JsonObjIn.getString("userName");
         Date huidigeDatum = new Date();
         SimpleDateFormat requiredformat =  new SimpleDateFormat("yyyy/MM/dd");
         SimpleDateFormat getformat =  new SimpleDateFormat("dd/MM/yyyy");
         try{
             System.out.println(JsonObjIn.getString("datum"));
-            huidigeDatum = getformat.parse(JsonObjIn.getString("datum"));
-            String datumstring = String.format("%s/%s/%s", huidigeDatum.getYear(), huidigeDatum.getMonth(), huidigeDatum.getDay());
-            huidigeDatum = requiredformat.parse(datumstring);
+//            huidigeDatum = getformat.parse(JsonObjIn.getString("datum"));
+//            String datumstring = String.format("%s/%s/%s", huidigeDatum.getYear(), huidigeDatum.getMonth(), huidigeDatum.getDay());
+//            huidigeDatum = requiredformat.parse(datumstring);
+            huidigeDatum = requiredformat.parse(JsonObjIn.getString("datum"));
+            System.out.println(huidigeDatum);
         }catch (ParseException e){
             System.out.println(e);
             huidigeDatum = new Date("2019/02/20");
@@ -153,12 +156,12 @@ public class StudentController implements Handler {
 
     public void setAfgemeld(Conversation conversation){
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-        String userName = JsonObjIn.getString("userName");
+        int studentNr = JsonObjIn.getInt("studentnr");
         boolean beschikbaar = JsonObjIn.getBoolean("beschikbaar");
         int lesID = JsonObjIn.getInt("lesID");
         boolean gelukt = false;
         for(Student s: informatieSysteem.getDeStudenten()){
-            if(s.getGebruikersnaam().contains(userName)){
+            if(s.getStudentNummer() == studentNr){
                 s.setBeschikbaarheid(lesID, beschikbaar);
                 gelukt = true;
                 break;

@@ -89,6 +89,7 @@ public class Les {
         DateFormat date = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         String alledocenten ="";
         String alleklassen ="";
+        Map<Integer, String> studentnaamlijst = new HashMap<>();
         for(String d: docenten){
             alledocenten+=d.strip()+"; ";
         }
@@ -100,6 +101,7 @@ public class Les {
 //            System.out.println(k.getKlasCode());
             for(Student s: k.getStudenten()){
                 statusLijst.put(s.getStudentNummer(),s.getBeschikbaarheid().get(this.getLesID()));
+                studentnaamlijst.put(s.getStudentNummer(), s.getVoornaam()+" "+s.getVolledigeAchternaam());
             }
         }
         JsonObjectBuilder presentieLijst = Json.createObjectBuilder();
@@ -109,6 +111,7 @@ public class Les {
         String studentnr;
         for(Map.Entry presentie : getPresentieLijst().entrySet()){
             studentnr = presentie.getKey().toString();
+            String studentnaam = studentnaamlijst.get(Integer.parseInt(studentnr));
             aanwezig = Boolean.parseBoolean(presentie.getValue().toString());
             for(Map.Entry afmelding: getStatusLijst().entrySet()){
                 if(afmelding.getKey().toString().contains(studentnr)){
@@ -117,7 +120,11 @@ public class Les {
                 }
             }
             JsonObjectBuilder studentpresentie = Json.createObjectBuilder();
-            studentpresentie.add("studentnummer", studentnr).add("aanwezig", aanwezig).add("afgemeld", afgemeld);
+            studentpresentie
+                    .add("studentnummer", studentnr)
+                    .add("aanwezig", aanwezig)
+                    .add("afgemeld", afgemeld)
+                    .add("studentnaam", studentnaam);
             presentieLijst.add(String.format("%s", index), studentpresentie);
             index+=1;
         }
