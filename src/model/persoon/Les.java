@@ -48,8 +48,12 @@ public class Les {
     public void setPresentieLijst(Map<Integer, Boolean> presLst){
         this.presentieLijst = presLst;
     }
-    public Map<Integer, Boolean> getPresentieLijst(){
-        return presentieLijst;
+    public JsonObject getPresentieLijst(){
+        JsonObjectBuilder presentielijst = Json.createObjectBuilder();
+        for(Map.Entry entry: presentieLijst.entrySet()){
+            presentielijst.add(entry.getKey().toString(), Boolean.parseBoolean(entry.getValue().toString()));
+        }
+        return presentielijst.build();
     }
 
     public String getLesCode(){

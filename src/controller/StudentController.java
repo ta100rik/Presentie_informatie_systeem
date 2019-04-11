@@ -44,10 +44,18 @@ public class StudentController implements Handler {
 
     public void setWachtwoord(Conversation conversation){
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
+        String huidigWachtwoord ="";
+        String nieuwWachtwoord ="";
+        String gebruikersnaam = "zyad.osseyran@student.hu.nl";
 
-        String huidigWachtwoord = JsonObjIn.getString("currPass");
-        String nieuwWachtwoord = JsonObjIn.getString("newPass");
-        String gebruikersnaam = JsonObjIn.getString("userName");
+        try{
+            huidigWachtwoord = JsonObjIn.getString("currPass");
+            nieuwWachtwoord = JsonObjIn.getString("newPass");
+            gebruikersnaam = JsonObjIn.getString("userName");
+        } catch (NullPointerException e){
+            System.out.println(e);
+        }
+
 
         for(Student s: informatieSysteem.getDeStudenten()){
             if(s.getGebruikersnaam().contains(gebruikersnaam)){

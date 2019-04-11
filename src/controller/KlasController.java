@@ -61,8 +61,12 @@ class KlasController implements Handler {
     private void returnKlas(Conversation conversation) {
         JsonObject lJsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
 
-//      String lKlasCode = "TICT-SIE-V1D";
-        String lKlasCode = lJsonObjIn.getString("klasCode");                      //Should have "TICT-SIE-V1D"-format
+        String lKlasCode = "TICT-SIE-V1D";
+        try{
+            lKlasCode = lJsonObjIn.getString("klasCode"); //Should have "TICT-SIE-V1D"-format
+        } catch (NullPointerException e){
+            System.out.println(e);
+        }
         JsonObjectBuilder aJsonObjectBuilder = Json.createObjectBuilder();
         JsonObjectBuilder sJsonObjectBuilder = Json.createObjectBuilder();
         JsonObjectBuilder kJsonObjectBuilder = Json.createObjectBuilder();

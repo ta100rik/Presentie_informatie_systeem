@@ -48,14 +48,17 @@ public class MedestudentenController implements Handler {
 	 */
 	private void ophalen(Conversation conversation) {
 		JsonObject lJsonObjectIn = (JsonObject) conversation.getRequestBodyAsJSON();
-		String lGebruikersnaam = lJsonObjectIn.getString("username");
+		String lGebruikersnaam = "zyad.osseyran@student.hu.nl";
+		try{
+			lGebruikersnaam = lJsonObjectIn.getString("username");
+		} catch (NullPointerException e){
+			System.out.println(e);
+		}
+
 		Student lStudentZelf = informatieSysteem.getStudent(lGebruikersnaam);
 		String  lGroepIdZelf = lStudentZelf.getGroepId();
-		
 		Klas lKlas = informatieSysteem.getKlasVanStudent(lStudentZelf);		// klas van de student opzoeken
-
-    List<Student> lStudentenVanKlas = lKlas.getStudenten();	// medestudenten opzoeken
-		
+		List<Student> lStudentenVanKlas = lKlas.getStudenten();	// medestudenten opzoeken
 		JsonArrayBuilder lJsonArrayBuilder = Json.createArrayBuilder();						// Uiteindelijk gaat er een array...
 		
 		for (Student lMedeStudent : lStudentenVanKlas) {									        // met daarin voor elke medestudent een JSON-object... 
