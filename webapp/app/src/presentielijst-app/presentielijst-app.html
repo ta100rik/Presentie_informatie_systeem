@@ -345,14 +345,16 @@
                   if(conf){
                       let lst = this.get(['studenten']);
                       // console.log(lst);
-                      let arr = new Array();
+                      let arr = {};
                       for(var i= 0 ;i < lst.length;i++){
-                          arr.push(lst[i][0]+":"+lst[i][1]);
-
+                          let nummer  = String(lst[i][0]);
+                          let bol = lst[i][1];
+                            arr[nummer] = bol;
                       }
-                      this.send_presentie(arr);
+                      // console.log();
+                      this.send_presentie(JSON.stringify(arr));
                       // alert('Data sucessvol opgeslagen');
-                      this._go_home();
+                      // this._go_home();
                   }
                   else{
                       alert('Abort mission');
