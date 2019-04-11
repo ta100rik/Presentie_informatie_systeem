@@ -189,18 +189,21 @@ public class LesController implements Handler {
 //        String klasCode = "TICT-SIE-V1A";
         String lesCode = lJsonObjIn.getString("lesCode");
         String klasCode = lJsonObjIn.getString("klasCode");
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date huidigeDatum = new Date();
+        SimpleDateFormat requiredformat =  new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat getformat =  new SimpleDateFormat("dd/MM/yyyy");
         try{
-//
-            huidigeDatum =format.parse(lJsonObjIn.getString("datum"));
+            huidigeDatum = getformat.parse(lJsonObjIn.getString("datum"));
+            String datumstring = String.format("%s/%s/%s", huidigeDatum.getYear(), huidigeDatum.getMonth(), huidigeDatum.getDay());
+            huidigeDatum = requiredformat.parse(datumstring);
         }catch (ParseException e){
-            System.out.println(e.toString());
+            System.out.println(e);
             huidigeDatum = new Date("2019/02/20");
         }catch (NullPointerException e){
-            System.out.println(e.toString());
+            System.out.println(e);
             huidigeDatum = new Date("2019/02/20");
         }
+//        String userName = "zyad
         JsonObjectBuilder sJsonObjectBuilder = Json.createObjectBuilder();
         JsonObjectBuilder nr = Json.createObjectBuilder();
         Map<Integer, JsonObject> vakPresentieNr = informatieSysteem.getVakPresentiNr(lesCode, klasCode, huidigeDatum);
