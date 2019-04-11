@@ -253,6 +253,7 @@
         },
         ophalen_les_student: function() {
           // console.log("_medestudenten_ophalen_request_handler user="+this.c_username);
+          var lApp = document.querySelector('my-app');
           this.$.ajax_student_les.contentType="application/json";
           this.$.ajax_student_les.body={
             "userName":this.c_username
@@ -265,12 +266,14 @@
         },
         klas_ophalen_request_handler: function() {
           // console.log("_medestudenten_ophalen_request_handler user="+this.c_username);
-          var lApp = document.querySelector('my-app');
+
+          // "datum":lApp._systeemdatumlokaal
           // console.log();
           this.$.ajax_student_ophalen.contentType="application/json";
           this.$.ajax_student_ophalen.body={
             "userName":this.c_username,
-            "datum":lApp._systeemdatumlokaal
+            "datum": "2019/02/03"
+
           };
           this.$.ajax_student_ophalen.generateRequest();
         },
