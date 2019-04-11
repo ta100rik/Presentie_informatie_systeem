@@ -32,8 +32,12 @@ public class DocentController implements Handler {
     }
     public void returnDocent(Conversation conversation){
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-        String userName = JsonObjIn.getString("userName");
-//        String userName = "alex.jongman@hu.nl";
+        String userName = "alex.jongman@hu.nl";
+        try {
+            userName = JsonObjIn.getString("userName");
+        }catch (NullPointerException e){
+            System.out.println(e);
+        }
         JsonObjectBuilder docentbuilder = Json.createObjectBuilder();
         JsonObjectBuilder rooster = Json.createObjectBuilder();
         for(Docent s: informatieSysteem.getDeDocenten()){
@@ -43,6 +47,7 @@ public class DocentController implements Handler {
                     rooster.add(String.format("%s",lesindex), l.returnAsJson());
                     lesindex+=1;
                 }
+
                 docentbuilder
                         .add("docentID", s.getDocentNummer())
                         .add("gebruikersnaam",s.getGebruikersnaam())
