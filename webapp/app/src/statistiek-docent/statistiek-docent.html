@@ -143,8 +143,11 @@
                 </div>
                 <div class="row eachlesson">
                     <table id="student_pres">
-                        <template is="dom-repeat" items="{{studenten}}">
-                            <tr> {{item}}</tr>
+                        <template is="dom-repeat" items="{{studentPris}}">
+                            <tr>
+                                <td>{{item.1.1}}</td>
+                                <td>{{item.2.1}}%</td>
+                            </tr>
 
                         </template>
                     </table>
@@ -208,6 +211,9 @@
                     },
                     klasCode: {
                         type: String,
+                    },
+                    studentPris: {
+                        type: Array,
                     },
                     c_username: {
                         type: String,
@@ -341,7 +347,27 @@ Date huidigeDatum = new Date("2019/02/20");*/
                     this.$.ajax_gemiddelde_presentie.generateRequest();
                 },
                 _gemiddelde_presentie_ophalen_response_handler:function(request) {
-                    console.log(request);
+                    console.log(Object.entries(request.detail.response));
+                    var gemAf = Object.entries(request.detail.response)[0][1];
+                    console.log(gemAf);
+                    var students = Object.entries(gemAf);
+                    console.log(students.length);
+                    var studentenPris = [];
+                    for (var i = 0; i < students.length; i++) {
+                        var temp = Object.entries(students)[i];
+                        console.log(temp);
+                        temp = Object.entries(students[i]);
+                        console.log(temp[1][1]);
+                        var student = Object.entries(temp[1][1]);
+                        console.log(student);
+                        studentenPris.push(student);
+
+
+                    }
+
+                    this.studentPris = studentenPris;
+                    console.log(this.studentPris);
+
                 },
 
 
