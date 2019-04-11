@@ -100,6 +100,7 @@ public class StudentController implements Handler {
         SimpleDateFormat requiredformat =  new SimpleDateFormat("yyyy/MM/dd");
         SimpleDateFormat getformat =  new SimpleDateFormat("dd/MM/yyyy");
         try{
+            System.out.println(JsonObjIn.getString("datum"));
             huidigeDatum = getformat.parse(JsonObjIn.getString("datum"));
             String datumstring = String.format("%s/%s/%s", huidigeDatum.getYear(), huidigeDatum.getMonth(), huidigeDatum.getDay());
             huidigeDatum = requiredformat.parse(datumstring);
