@@ -225,23 +225,22 @@
                     },
                 },
                 _initializing : function() {
-                        console.log(this.c_visible);
 
-                        console.log(this.c_rol);
                     if (this.c_visible) {                                 // zodra zichtbaar geworden moet er wat worden gedaan
-                        if (this.c_rol=="docent") {                        // voor studenten
+                        if (this.c_rol=="docent") {
+                            this.loaddata();
+
                             // this._lesrooster_ophalen_request_handler();    //    haal info op van server
                         } else {                                            // na handmatige url wijziging zonder login
                            this._go_home();                                  /* het sluiten van deze error verwijst  */                                                  /* terug naar home page */
                         }
                     }
                 },
-                datas: function(e){
+                loaddata: function(e){
 
                     var lApp = document.querySelector('my-app');
                     console.log(lApp._les_id);
                 },
-
                 test: function(e){
                     var DummyStudents = this.get(['DummyStudents']);
                     let studID = e.currentTarget.value;

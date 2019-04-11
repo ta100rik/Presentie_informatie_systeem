@@ -288,7 +288,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <section page-name="Docent_Presentielijst"
                  title="Docent_Presentielijst"
                  element$="presentielijst-app">
-          <presentielijst-app ></presentielijst-app>
+          <presentielijst-app c_visible="[[_are_strings_equal(_ar_page, 'Docent_Presentielijst')]]"
+                              c_rol="[[_rol]]"
+                              c_username="[[_username]]"></presentielijst-app>
         </section>
 
         <!-- sections voor student -->
