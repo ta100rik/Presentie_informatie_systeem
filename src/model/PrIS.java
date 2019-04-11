@@ -368,8 +368,9 @@ public class PrIS {
 			int studentnr =Integer.parseInt(AantalLessen.getKey().toString());
 			JsonObjectBuilder aanwezigheid = Json.createObjectBuilder();
 			aanwezigheid
-					.add("lessenTotaal", df2.format(Double.parseDouble(aantalLessenStudent.get(studentnr).toString())))
-					.add("lessenAanwezig", df2.format(Double.parseDouble(aantalLessenPresent.get(studentnr).toString())));
+//					.add("lessenTotaal", df2.format(Double.parseDouble(aantalLessenStudent.get(studentnr).toString())))
+//					.add("lessenAanwezig", df2.format(Double.parseDouble(aantalLessenPresent.get(studentnr).toString())))
+					.add("gemiddeldeAanwezigheid", df2.format(Double.parseDouble(aantalLessenPresent.get(studentnr).toString())/Double.parseDouble(aantalLessenStudent.get(studentnr).toString())*100));
 			VakPresentieNr.put(studentnr, aanwezigheid.build());
 		}
 		return VakPresentieNr;
@@ -385,8 +386,9 @@ public class PrIS {
 				NaamEnAanwezigheid
 						.add("studentnr", studentnr)
 						.add("naam", s.getVoornaam()+" "+s.getVolledigeAchternaam())
-						.add("lessenTotaal", Double.parseDouble(presentie.getString("lessenTotaal")))
-						.add("lessenAanwezig", Double.parseDouble(presentie.getString("lessenAanwezig")));
+//						.add("lessenTotaal", Double.parseDouble(presentie.getString("lessenTotaal")))
+//						.add("lessenAanwezig", Double.parseDouble(presentie.getString("lessenAanwezig")))
+						.add("gemiddeldeAanwezigheid", Double.parseDouble((presentie.getString("gemiddeldeAanwezigheid"))));
 			}
 		}
 		JsonObject returnObj = NaamEnAanwezigheid.build();
