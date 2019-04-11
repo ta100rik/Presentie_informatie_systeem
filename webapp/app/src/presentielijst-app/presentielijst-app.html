@@ -244,7 +244,8 @@
 
                     this.$.ajax_lijst_presentetie.contentType="application/json";
                     this.$.ajax_lijst_presentetie.body={
-                        "presentie":array
+                        "presentie":array,
+                        "lesID":this.c_lesid
                     };
                     this.$.ajax_lijst_presentetie.generateRequest();
                 },
@@ -290,7 +291,7 @@
 
 
                     temp = Object.entries(temp);
-                    console.log(temp);
+                    // console.log(temp);
                     this.studenten = list;
                 },
                 test: function(e){
@@ -350,7 +351,7 @@
 
                       }
                       this.send_presentie(arr);
-                      alert('Data sucessvol opgeslagen');
+                      // alert('Data sucessvol opgeslagen');
                       this._go_home();
                   }
                   else{
