@@ -252,6 +252,7 @@ public class PrIS {
 						if (klas.contains(k.getKlasCode())) {
 							for (Student s : k.getStudenten()) {
 								l.changePresentieLijst(s.getStudentNummer(), true);
+								l.changeStatusLijst(s.getStudentNummer(), false);
 								s.addLes(l);
 
 //								l.changeStatusLijst(s.getStudentNummer(), false);

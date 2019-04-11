@@ -81,8 +81,8 @@ public class LesController implements Handler {
             if(lesID == l.getLesID()) {
                 sJsonObjectBuilder.add("les", l.returnAsJson());
 //                System.out.println(l.returnAsJson());
-                System.out.println(l.getPresentieLijst());
-                System.out.println(l.getStatusJson());
+//                System.out.println("Presentie: "+l.getPresentieLijst());
+//                System.out.println("Status: "+l.getStatusJson());
             }
         }
         String lJsonOut = sJsonObjectBuilder.build().toString();
@@ -115,8 +115,7 @@ public class LesController implements Handler {
                 presentinit.add(slist[0].replace("{","").replace("}","").replace("\"",""), Boolean.parseBoolean(slist[1]));
             }
             presentie = presentinit.build();
-
-            System.out.println("Presentie: "+presentie);
+//            System.out.println("Presentie setter: "+presentie);
             if(!presentie.isEmpty()) {
                 works = true;
             }
@@ -135,14 +134,18 @@ public class LesController implements Handler {
                 presentieLijst.put(Integer.parseInt(key), value);
 
             }
-            for (Les l : informatieSysteem.getDeLessen()) {
-                if (lesID == l.getLesID()) {
-                   l.setPresentieLijst(presentieLijst);
-                    gelukt = true;
+            for(Student s: informatieSysteem.getDeStudenten()) {
+                for (Les l : informatieSysteem.getDeLessen()) {
+                    if (lesID == l.getLesID()) {
+                        l.setPresentieLijst(presentieLijst);
+                        gelukt = true;
+                    }
+                    String studentnr = String.format("%s",s.getStudentNummer());
+                    if(s.getRooster().contains(l)&&presentie.containsKey(studentnr)){
+                        s.setBeschikbaarheid(lesID, !Boolean.parseBoolean(presentie.get(studentnr).toString()));
+                    }
                 }
             }
-
-
         }
         String message = "false";
         if(gelukt){

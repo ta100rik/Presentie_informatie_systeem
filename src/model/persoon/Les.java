@@ -52,8 +52,8 @@ public class Les {
             statLst.put(Integer.parseInt(entry.getKey().toString()), !Boolean.parseBoolean(entry.getValue().toString()));
         }
         setStatusLijst(statLst);
-        System.out.println(presentieLijst);
-        System.out.println(statusLijst);
+//        System.out.println(presentieLijst);
+//        System.out.println(statusLijst);
     }
 
     public void setStatusLijst(Map<Integer, Boolean> statLst){
@@ -147,7 +147,7 @@ public class Les {
             boolean aanwezig = Boolean.parseBoolean(presentie.getValue().toString());
             String studentnr =  presentie.getKey().toString();
 //            System.out.println(studentnr);
-            boolean afgemeld = getStatusLijst().get(Integer.parseInt(studentnr));
+            boolean afgemeld = Boolean.parseBoolean(getStatusJson().get(studentnr).toString());
 //            System.out.println("\n"+studentnr+"\n"+aanwezig+"\n"+afgemeld);
 //            if (afgemeld) {
 //                aanwezig = false;

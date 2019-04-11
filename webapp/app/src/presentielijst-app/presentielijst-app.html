@@ -85,7 +85,7 @@
             /* Absence buttons styling */
 
             .presentbutton{
-                background: rgb(42, 187, 42);
+                background: rgb(42, 187, 42) !important;
             }
 
             .absentbutton{
@@ -137,20 +137,20 @@
                 <!-- Fill table with data -->
 
                 <template is="dom-repeat" items="{{studenten}}" as="Student">
-                    <tr id="[[Student.studentnummer]]">
+                    <tr id="[[Student.0]]">
                         <td>[[Student.3]]</td>
                         <td>[[Student.0]]</td>
 
                         <!-- If present green button -->
                         <template is="dom-if" if="[[Student.1]]">
-                            <td><button class="presentbutton" id="[[Student.0]]test" value="[[Student.0]]" on-click="test"></button></td>
+                            <td><button class="presentbutton" id="[[Student.0]]test" value="[[Student.0]]" on-click="test">[[Student.1]]</button></td>
                             <!-- <td><button class="defaultbutton" id="[[Student.studentnum]]def" value="[[Student.studentnum]]" on-click="absenceHandler"></button></td> -->
                         </template>
 
                         <!-- If absence red button -->
                         <template is="dom-if" if="[[Student.2]]">
                             <!-- <td><button class="defaultbutton" id="[[Student.studentnum]]def" value="[[Student.studentnum]]" on-click="presenceHandler"></button></td> -->
-                            <td><button class="absentbutton" id="[[Student.0]]test" value="[[Student.0]]" on-click="test"></button></td>
+                            <td><button class="absentbutton" id="[[Student.0]]test" value="[[Student.0]]" on-click="test">[[Student.2]]</button></td>
                         </template>
                     </tr>
 
@@ -226,7 +226,6 @@
                     if (this.c_visible) {                                 // zodra zichtbaar geworden moet er wat worden gedaan
                         if (this.c_rol=="docent") {
                             this.loaddata();
-
                             // this._lesrooster_ophalen_request_handler();    //    haal info op van server
                         } else {                                            // na handmatige url wijziging zonder login
                            this._go_home();                                  /* het sluiten van deze error verwijst  */                                                  /* terug naar home page */
