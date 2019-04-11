@@ -261,6 +261,7 @@
                     this.$.ajax_studentlijst_ophalen.generateRequest();
                 },
                 _return_lijst:function(response){
+                    console.log(response.detail.response);
                     var DummyStudents = Object.entries(response.detail.response);
                     this.set('_c_lessen',DummyStudents);
                     DummyStudents = Object.entries(DummyStudents[0][1])[8][1];
@@ -283,7 +284,7 @@
                         sInfo.push(student[1][1]);
                         sInfo.push(student[2][1]);
                         sInfo.push(student[3][1]);
-                        console.log(sInfo);
+                        // console.log(sInfo);
                         list.push(sInfo);
                     }
 
