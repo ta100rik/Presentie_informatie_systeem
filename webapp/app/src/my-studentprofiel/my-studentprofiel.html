@@ -271,9 +271,11 @@
 
           // "datum":lApp._systeemdatumlokaal
           // console.log();
+          var lApp = document.querySelector('my-app');
           this.$.ajax_student_ophalen.contentType="application/json";
           this.$.ajax_student_ophalen.body={
-            "userName":this.c_username
+            "userName":this.c_username,
+            "datum":lApp._systeemdatumstandaard
 
           };
           this.$.ajax_student_ophalen.generateRequest();
