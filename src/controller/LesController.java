@@ -189,13 +189,13 @@ public class LesController implements Handler {
 //        String klasCode = "TICT-SIE-V1A";
         String lesCode = lJsonObjIn.getString("lesCode");
         String klasCode = lJsonObjIn.getString("klasCode");
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date huidigeDatum = new Date();
         try{
 //
             huidigeDatum =format.parse(lJsonObjIn.getString("datum"));
         }catch (ParseException e){
-            huidigeDatum = new Date("2019-02-20 16:00");
+            huidigeDatum = new Date("2019-02-20");
             System.out.println(e);
         }
         JsonObjectBuilder sJsonObjectBuilder = Json.createObjectBuilder();

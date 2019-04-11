@@ -97,12 +97,12 @@ public class StudentController implements Handler {
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
         String userName = JsonObjIn.getString("userName");
         Date huidigeDatum = new Date();
-        SimpleDateFormat format =  new SimpleDateFormat("yyyy/MM/dd hh:mm");
+        SimpleDateFormat format =  new SimpleDateFormat("yyyy/MM/dd");
         try{
             huidigeDatum = format.parse(JsonObjIn.getString("datum"));
         }catch (ParseException e){
             conversation.sendJSONMessage(e.toString());
-            huidigeDatum = new Date("2019/02/20 16:00");
+            huidigeDatum = new Date("2019/02/20");
         }
 //        String userName = "zyad.osseyran@student.hu.nl";
         Map<String, Integer> aanwezigheid = new HashMap<>();
