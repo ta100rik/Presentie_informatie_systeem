@@ -77,6 +77,7 @@ public class Les {
     public JsonObject getStatusJson(){
         JsonObjectBuilder statuslijst = Json.createObjectBuilder();
         for(Map.Entry entry: statusLijst.entrySet()){
+//            System.out.println(entry.getKey()+":"+entry.getValue());
             statuslijst.add(entry.getKey().toString(), Boolean.parseBoolean(entry.getValue().toString()));
         }
         return statuslijst.build();

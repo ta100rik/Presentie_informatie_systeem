@@ -115,7 +115,7 @@ public class LesController implements Handler {
                 presentinit.add(slist[0].replace("{","").replace("}","").replace("\"",""), Boolean.parseBoolean(slist[1]));
             }
             presentie = presentinit.build();
-//            System.out.println("Presentie setter: "+presentie);
+            System.out.println("Presentie setter: "+presentie);
             if(!presentie.isEmpty()) {
                 works = true;
             }
@@ -138,6 +138,7 @@ public class LesController implements Handler {
                 for (Les l : informatieSysteem.getDeLessen()) {
                     if (lesID == l.getLesID()) {
                         l.setPresentieLijst(presentieLijst);
+//                        System.out.println("Presentielijst: "+l.getPresentieLijst());
                         gelukt = true;
                     }
                     String studentnr = String.format("%s",s.getStudentNummer());

@@ -332,34 +332,35 @@ public class PrIS {
 			for (Les l : lessen) {
 				for (Student s : deStudenten) {
 //				System.out.println(l.getStartdatum() +" "+datum);
-				if (s.getRooster().contains(l) && l.getStartdatum().before(datum)) {
-					if (klas.getStudenten().contains(s)) {
-						if (aantalLessenPresent.containsKey(s.getStudentNummer())) {
-							double aantalvak = aantalLessenStudent.get(s.getStudentNummer()) + 1.00;
-							double aanwezig = aantalLessenPresent.get(s.getStudentNummer());
-//							uncomment for testing
-//							if (s.getStudentNummer() == 1748635){
-//								aanwezig=2.00;
-//							}
-//							else
-							if (s.getBeschikbaarheid().containsKey(l.getLesID())) {
-								if(s.getBeschikbaarheid().containsKey(l.getLesID())) {
-									aanwezig += 1.00;
-								}
-							}
-							aantalLessenStudent.put(s.getStudentNummer(), aantalvak);
-							aantalLessenPresent.put(s.getStudentNummer(), aanwezig);
-						} else {
-							if (l.getPresentieMap().containsKey(s.getStudentNummer())) {
-								aantalLessenPresent.put(s.getStudentNummer(), 1.00);
-							} else {
-								aantalLessenPresent.put(s.getStudentNummer(), 0.00);
-							}
-							aantalLessenStudent.put(s.getStudentNummer(), 1.00);
-						}
-						System.out.println(aantalLessenPresent);
-					}
-				}
+                    if (s.getRooster().contains(l) && l.getStartdatum().before(datum)) {
+                        if (klas.getStudenten().contains(s)) {
+                            if (aantalLessenPresent.containsKey(s.getStudentNummer())) {
+                                double aantalvak = aantalLessenStudent.get(s.getStudentNummer()) + 1.00;
+                                double aanwezig = aantalLessenPresent.get(s.getStudentNummer());
+    //						     uncomment for testing
+//    							 if (s.getStudentNummer() == 1748635){
+//    								aanwezig=2.00;
+//    							 }
+//    							 else
+                                String studentnummer = String.format("%s",s.getStudentNummer());
+                                if (l.getPresentieLijst().containsKey(studentnummer)) {
+//                                    System.out.println(l.getLesID()+" "+studentnummer+" "+l.getPresentieLijst().get(studentnummer));
+                                    if(!s.beschikbaar(l.getLesID())) {
+                                        aanwezig += 1.00;
+                                    }
+                                }
+                                aantalLessenStudent.put(s.getStudentNummer(), aantalvak);
+                                aantalLessenPresent.put(s.getStudentNummer(), aanwezig);
+                                } else {
+                                    if (!s.beschikbaar(l.getLesID())) {
+                                        aantalLessenPresent.put(s.getStudentNummer(), 1.00);
+                                    } else {
+                                        aantalLessenPresent.put(s.getStudentNummer(), 0.00);
+                                    }
+                                    aantalLessenStudent.put(s.getStudentNummer(), 1.00);
+                            }
+                        }
+                    }
 			}
 		}
 
@@ -367,14 +368,20 @@ public class PrIS {
 		for(Map.Entry AantalLessen: aantalLessenStudent.entrySet()){
 			int studentnr =Integer.parseInt(AantalLessen.getKey().toString());
 			JsonObjectBuilder aanwezigheid = Json.createObjectBuilder();
-			aanwezigheid
+			double aantalAanwezig= Double.parseDouble(aantalLessenPresent.get(studentnr).toString());
+			double aantalLessen = Double.parseDouble(aantalLessenStudent.get(studentnr).toString());
+            System.out.println(studentnr+" aantal: "+aantalLessen+" aanwezig: "+aantalAanwezig);
+            aanwezigheid
 //					.add("lessenTotaal", df2.format(Double.parseDouble(aantalLessenStudent.get(studentnr).toString())))
 //					.add("lessenAanwezig", df2.format(Double.parseDouble(aantalLessenPresent.get(studentnr).toString())))
-					.add("gemiddeldeAanwezigheid", df2.format(Double.parseDouble(aantalLessenPresent.get(studentnr).toString())/Double.parseDouble(aantalLessenStudent.get(studentnr).toString())*100));
+					.add("gemiddeldeAanwezigheid", String.format("%s",aantalAanwezig/aantalLessen*100));
 			VakPresentieNr.put(studentnr, aanwezigheid.build());
 		}
+
+//        System.out.println(VakPresentieNr);
 		return VakPresentieNr;
 	}
+
 
 	public JsonObject vakPresentieNaam(Map<Integer, JsonObject> vakPresentieNr, int studentnr){
 		//convert Student nr to student name for message back'
@@ -382,7 +389,7 @@ public class PrIS {
 		for(Student s: getDeStudenten()){
 			if(s.getStudentNummer() == studentnr){
 				JsonObject presentie = vakPresentieNr.get(studentnr);
-				System.out.println(presentie.get("lessenTotaal"));
+//				System.out.println(presentie.get("lessenTotaal"));
 				NaamEnAanwezigheid
 						.add("studentnr", studentnr)
 						.add("naam", s.getVoornaam()+" "+s.getVolledigeAchternaam())

@@ -40,14 +40,11 @@ public class Student extends Persoon {
 	}
 
 	public boolean beschikbaar(int lesID){
-		Iterator it = beschikbaarheid.entrySet().iterator();
-		while(it.hasNext()){	//loop through map
-			Map.Entry pair = (Map.Entry)it.next();
+		for(Map.Entry pair: getBeschikbaarheid().entrySet()){
 			//als de student de les heeft geef de beschikbaarheid terug
 			if(lesID ==  Integer.parseInt(pair.getKey().toString())) {
 				return Boolean.parseBoolean(pair.getValue().toString());
 			}
-			it.remove();
 		}
 		//geef false terug als de student de les niet heeft
 		return false;
