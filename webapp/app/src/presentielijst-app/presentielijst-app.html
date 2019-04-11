@@ -79,13 +79,10 @@
                 border-radius: 12px;
                 width: 25%;
                 height: 15px;
+                cursor: pointer;
             }
 
             /* Absence buttons styling */
-
-            .defaultbutton{
-                background: white;
-            }
 
             .presentbutton{
                 background: rgb(42, 187, 42);
@@ -129,8 +126,7 @@
 
                 <!-- Table header -->
                 <thead>
-                    <th on-click="datas">Naam</th>
-                    <th>Achternaam</th>
+                    <th>Naam</th>
                     <th>Studentnummer</th>
                     <th>Present</th>
                 </thead>
@@ -140,24 +136,25 @@
 
                 <!-- Fill table with data -->
 
-                <template is="dom-repeat" items="{{DummyStudents}}" as="Student">
-                    <tr id="[[Student.studentnum]]">
-                        <td>[[Student.name]]</td>
-                        <td>[[Student.surname]]</td>
-                        <td>[[Student.studentnum]]</td>
+                <template is="dom-repeat" items="{{studenten}}" as="Student">
+                    <tr id="[[Student.studentnummer]]">
+                        <td>[[Student.3]]</td>
+                        <td>[[Student.0]]</td>
 
                         <!-- If present green button -->
-                        <template is="dom-if" if="[[Student.present]]">
-                            <td><button class="presentbutton" id="[[Student.studentnum]]test" value="[[Student.studentnum]]" on-click="test"></button></td>
+                        <template is="dom-if" if="[[Student.1]]">
+                            <td><button class="presentbutton" id="[[Student.0]]test" value="[[Student.0]]" on-click="test"></button></td>
                             <!-- <td><button class="defaultbutton" id="[[Student.studentnum]]def" value="[[Student.studentnum]]" on-click="absenceHandler"></button></td> -->
                         </template>
 
                         <!-- If absence red button -->
-                        <template is="dom-if" if="[[Student.Absence]]">
+                        <template is="dom-if" if="[[Student.2]]">
                             <!-- <td><button class="defaultbutton" id="[[Student.studentnum]]def" value="[[Student.studentnum]]" on-click="presenceHandler"></button></td> -->
-                            <td><button class="absentbutton" id="[[Student.studentnum]]test" value="[[Student.studentnum]]" on-click="test"></button></td>
+                            <td><button class="absentbutton" id="[[Student.0]]test" value="[[Student.0]]" on-click="test"></button></td>
                         </template>
                     </tr>
+
+
                     <!-- end of row -->
                 </template>
                 </tbody>
@@ -170,6 +167,22 @@
 
         <!-- End of container -->
 
+
+        <iron-ajax
+                id="ajax_studentlijst_ophalen"
+                method="POST"
+                url="/les/ophalen"
+                handle-as="json"
+                on-response="_return_lijst">
+        </iron-ajax>
+
+        <iron-ajax
+                id="ajax_lijst_presentetie"
+                method="POST"
+                url="/les/setPresentie"
+                handle-as="json"
+                on-response="lijst_presentie_response">
+        </iron-ajax>
 
 
 
@@ -187,34 +200,14 @@
                 is: 'presentielijst-app',
 
                 properties: {
-                    DummyStudents: {
-                        type: Array,
-                        value: [
-                            {name : "Peter", surname : "de Vries", studentnum : 123321, present : false, Absence :  true},
-                            {name : "Koos", surname : "Achterhoek", studentnum : 324432, present : true, Absence :  false},
-                            {name : "Freek", surname : "Vonk", studentnum : 234432, present : false, Absence :  true},
-                            {name : "Violette", surname : "Zayas", studentnum : 320432, present : true, Absence :  false},
-                            {name : "Marvin", surname : "Alday", studentnum : 546650, present : false, Absence :  true},
-                            {name : "Helen", surname : "Hong", studentnum : 476747, present : true, Absence :  false},
-                            {name : "Donetta", surname : "Minnix", studentnum : 534590, present : false, Absence :  true},
-                            {name : "Alesia", surname : "Basham", studentnum : 356897, present : true, Absence :  false},
-                            {name : "Lyn", surname : "Flewelling", studentnum : 365354, present : false, Absence :  true},
-                            {name : "Gilberte", surname : "Wafer", studentnum : 432423, present : true, Absence :  false},
-                            {name : "Margeret", surname : "Hundt", studentnum : 123124, present : false, Absence :  true},
-                            {name : "Lavinia", surname : "Kimmons", studentnum : 543365, present : false, Absence :  true},
-                            {name : "Jc", surname : "Schmit", studentnum : 346559, present : false, Absence :  true},
-                            {name : "Alvin", surname : "Capers", studentnum : 324409, present : true, Absence :  false},
-                            {name : "Amira", surname : "Croslin", studentnum : 534908, present : false, Absence :  true},
-                            {name : "Louanne", surname : "Berkman", studentnum : 348976, present : true, Absence :  false},
-                            {name : "Jerry", surname : "Nurse", studentnum : 978943, present : false, Absence :  true},
-                            {name : "Amiee", surname : "Belgarde", studentnum : 213120, present : true, Absence :  false}
-                        ]
-                    },
                     c_rol: {
                         type: String,
                     },
                     c_username: {
                         type: String,
+                    },
+                    studenten: {
+                        type: Array,
                     },
                     c_visible: {
                         type: Boolean,                                      /* true when element is the active visible item */
@@ -223,6 +216,10 @@
                                                                    regel in de functie dat er niets gebeurd
                                                                    als c_visible false is */
                     },
+
+                    c_lesid :{
+                        type: Number,
+                    }
                 },
                 _initializing : function() {
 
@@ -239,12 +236,67 @@
                 loaddata: function(e){
 
                     var lApp = document.querySelector('my-app');
-                    console.log(lApp._les_id);
+                    // console.log(lApp._les_id);
+                    this.set('c_lesid',lApp._les_id);
+                    this.ophalen_lijst();
+                },
+                send_presentie:function(array){
+
+                    this.$.ajax_lijst_presentetie.contentType="application/json";
+                    this.$.ajax_lijst_presentetie.body={
+                        "presentie":array
+                    };
+                    this.$.ajax_lijst_presentetie.generateRequest();
+                },
+                lijst_presentie_response:function(res){
+                    console.log(res.detail.response);
+                },
+                ophalen_lijst: function() {
+                    // console.log("_medestudenten_ophalen_request_handler user="+this.c_username);
+                    this.$.ajax_studentlijst_ophalen.contentType="application/json";
+                    this.$.ajax_studentlijst_ophalen.body={
+                        "lesID":this.c_lesid,
+                    };
+                    this.$.ajax_studentlijst_ophalen.generateRequest();
+                },
+                _return_lijst:function(response){
+                    var DummyStudents = Object.entries(response.detail.response);
+                    this.set('_c_lessen',DummyStudents);
+                    DummyStudents = Object.entries(DummyStudents[0][1])[8][1];
+                    this.set('DummyStudents',Object.entries(DummyStudents));
+                    console.log(DummyStudents);
+                    var length = Object.entries(DummyStudents).length;
+                    // console.log(Object.entries(DummyStudents)[1][1]);
+                    var temp;
+                    var list = [];
+                    for (var i =0; i<length; i ++)  {
+                        temp = Object.entries(DummyStudents);
+                        var temp2 = temp[i][1];
+                        // console.log(temp2);
+
+                        var student = Object.entries(temp2);
+
+                        var sInfo = [];
+
+                        sInfo.push(student[0][1]);
+                        sInfo.push(student[1][1]);
+                        sInfo.push(student[2][1]);
+                        sInfo.push(student[3][1]);
+                        console.log(sInfo);
+                        list.push(sInfo);
+                    }
+
+
+
+
+                    temp = Object.entries(temp);
+                    console.log(temp);
+                    this.studenten = list;
                 },
                 test: function(e){
-                    var DummyStudents = this.get(['DummyStudents']);
+                    var DummyStudents = this.get(['studenten']);
                     let studID = e.currentTarget.value;
-                    console.log(studID)
+                    // console.log(studID)
 
                     var el = this.shadowRoot.getElementById(studID+'test').className;
                     var el2 = this.shadowRoot.getElementById(studID+'test')
@@ -252,34 +304,58 @@
                     var i;
 
                     for(i = 0; i < j; i++){
-                        console.log(DummyStudents[i].studentnum);
-                        if(DummyStudents[i].studentnum == studID){
+                        // console.log(DummyStudents[i][0]);
+                        // console.log(DummyStudents[i][3])
+                        if(DummyStudents[i][0] == studID){
                             var index = i;
                             break;
                         }
                         else{
-                            console.log("Student not in class");
+                            // console.log("Student not in class");
                         }
 
                     }
 
                     if(el == "presentbutton") {
+                        // console.log(DummyStudents);
                         el2.classList.remove("presentbutton");
                         el2.classList.add("absentbutton");
-                        DummyStudents[i].Absence = true;
-                        DummyStudents[i].present = false;
+                        // console.log("DIT IS DE LOG" + DummyStudents[index][1]);
+                        DummyStudents[index][2] = true;
+                        DummyStudents[index][1] = false;
 
-                        console.log(DummyStudents[i]);
+                        // console.log(DummyStudents[i]);
 
                     } else {
                         el2.classList.remove("absentbutton");
                         el2.classList.add("presentbutton");
-                        DummyStudents[i].Absence = false;
-                        DummyStudents[i].present = true;
+                        DummyStudents[index][2] = false;
+                        DummyStudents[index][1] = true;
 
-                        console.log(DummyStudents[i])
+                        // console.log(DummyStudents[i])
                     }
+                    console.log(DummyStudents);
+                    this.set('studenten',DummyStudents);
 
+                },
+
+                WrapUpHandler: function(){
+                  var conf = confirm("Weet u het zeker");
+                  if(conf){
+                      let lst = this.get(['studenten']);
+                      // console.log(lst);
+                      let arr = new Array();
+                      for(var i= 0 ;i < lst.length;i++){
+                          arr.push(lst[i][0]+":"+lst[i][1]);
+
+                      }
+                      this.send_presentie(arr);
+                      alert('Data sucessvol opgeslagen');
+                      this._go_home();
+                  }
+                  else{
+                      alert('Abort mission');
+                  }
                 },
 
                 _go_home: function() {
