@@ -131,7 +131,13 @@
             handle-as="json"
             on-response="_studentinfo_resp">
     </iron-ajax>
-
+    <iron-ajax
+            id="ajax_student_afmelden"
+            method="POST"
+            url="/student/presentie/setafmelden"
+            handle-as="json"
+            on-response="_afmelden_resp">
+    </iron-ajax>
 
 
   </template>
@@ -183,22 +189,44 @@
             for(var i = 0;i < Object.keys(lesinfo.presentie).length;i++){
               if(lesinfo.presentie[i].studentnummer == studentid[1]){
                 lesinfo.presentie[i].aanwezig = false;
+                lesinfo.presentie[i].afgemeld = true;
                 this.notifyPath('this._c_lessen[selector][1].presentie[i].aanwezig');
+
+                this.notifyPath('this._c_lessen[selector][1].presentie[i].afgemeld');
                 // console.log(lesinfo.presentie[i]);
+                // console.log(studentid[1]);
+                // console.log(lesinfo.lesID);
+                // console.log(lesinfo.presentie[i].afgemeld);
+                this.update_student_absentie(lesinfo.lesID,studentid[1],lesinfo.presentie[i].afgemeld);
                 break;
               }
             }
 
 
-
           }
+        },
+        update_student_absentie: function (ledId,studentid,presentie){
+          // console.log(ledId);
+          // console.log(studentid);
+          // console.log(presentie);
+          this.$.ajax_student_afmelden.contentType="application/json";
+          this.$.ajax_student_afmelden.body={
+            "lesID":  ledId,
+            "studentnr":studentid,
+            "beschikbaar":presentie
+          };
+          this.$.ajax_student_afmelden.generateRequest();
+        },
+        _afmelden_resp: function(response){
+          console.log(response.detail.response);
         },
 
 
-
         _initializing : function() {
+
           if (this.c_visible) {                                 // zodra zichtbaar geworden moet er wat worden gedaan
-            if (this.c_rol=="student") {                        // voor studenten
+            if (this.c_rol=="student") {
+              // voor studenten
               this._lesrooster_ophalen_request_handler();
               this._studentinfo();//    haal info op van server
             }else{
@@ -238,7 +266,8 @@
         },
 
         _lesrooster_ophalen_response_handler: function(request) {
-          this.set('_c_lessen',Object.entries(request.detail.response.rooster));
+          var array = Object.entries(request.detail.response.rooster);
+          this.set('_c_lessen',array);
         },
         test: function(element){
           // console.log(element);

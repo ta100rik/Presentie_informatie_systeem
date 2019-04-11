@@ -254,12 +254,12 @@ public class PrIS {
 								s.addLes(l);
 
 //								l.changeStatusLijst(s.getStudentNummer(), false);
-//								boolean beschikbaar = false;
-//								if(l.getLesID() == 10 && String.format("%s",s.getStudentNummer()).contains("174")) {
-//									beschikbaar = false;
-//								}
+								boolean beschikbaar = true;
+								if(l.getLesID() == 10 && String.format("%s",s.getStudentNummer()).contains("174")) {
+									beschikbaar = false;
+								}
 
-								s.setBeschikbaarheid(l.getLesID(), false);
+								s.setBeschikbaarheid(l.getLesID(), beschikbaar);
 							}
 						}
 					}
@@ -343,7 +343,8 @@ public class PrIS {
 							aantalLessenStudent.put(s.getStudentNummer(), aantalvak);
 							aantalLessenPresent.put(s.getStudentNummer(), aanwezig);
 						} else {
-							if (l.getPresentieLijst().get(s.getStudentNummer())) {
+							System.out.println();
+							if (l.getPresentieMap().get(s.getStudentNummer())) {
 								aantalLessenPresent.put(s.getStudentNummer(), 1.00);
 							} else {
 								aantalLessenPresent.put(s.getStudentNummer(), 0.00);

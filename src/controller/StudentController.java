@@ -44,10 +44,18 @@ public class StudentController implements Handler {
 
     public void setWachtwoord(Conversation conversation){
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
+        String huidigWachtwoord ="";
+        String nieuwWachtwoord ="";
+        String gebruikersnaam = "zyad.osseyran@student.hu.nl";
 
-        String huidigWachtwoord = JsonObjIn.getString("currPass");
-        String nieuwWachtwoord = JsonObjIn.getString("newPass");
-        String gebruikersnaam = JsonObjIn.getString("userName");
+        try{
+            huidigWachtwoord = JsonObjIn.getString("currPass");
+            nieuwWachtwoord = JsonObjIn.getString("newPass");
+            gebruikersnaam = JsonObjIn.getString("userName");
+        } catch (NullPointerException e){
+            System.out.println(e);
+        }
+
 
         for(Student s: informatieSysteem.getDeStudenten()){
             if(s.getGebruikersnaam().contains(gebruikersnaam)){
@@ -67,8 +75,12 @@ public class StudentController implements Handler {
 
     public void returnStudent(Conversation conversation){
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-        String userName = JsonObjIn.getString("userName");
-//        String userName = "zyad.osseyran@student.hu.nl";
+        String userName = "zyad.osseyran@student.hu.nl";
+        try{
+            userName = JsonObjIn.getString("userName");
+        } catch (NullPointerException e){
+            System.out.println(e);
+        }
         JsonObjectBuilder studentbuilder = Json.createObjectBuilder();
         JsonObjectBuilder rooster = Json.createObjectBuilder();
         JsonObjectBuilder aanwezigheid = Json.createObjectBuilder();
@@ -77,7 +89,7 @@ public class StudentController implements Handler {
                 int lesindex = 0;
                 for (Les l : s.getRooster()) {
                     JsonObjectBuilder lesJson = Json.createObjectBuilder();
-                    lesJson.add("les", l.returnAsJson()).add("aanwezig", l.getPresentieLijst().get(s.getStudentNummer()));
+                    lesJson.add("les", l.returnAsJson()).add("aanwezig", l.getPresentieMap().get(s.getStudentNummer()));
                     rooster.add(String.format("%s", lesindex), lesJson);
                     lesindex += 1;
                 }
@@ -97,22 +109,16 @@ public class StudentController implements Handler {
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
         System.out.println(JsonObjIn.toString());
         String userName = JsonObjIn.getString("userName");
-        Date huidigeDatum = new Date();
+        Date huidigeDatum = new Date("2019/02/20");
         SimpleDateFormat requiredformat =  new SimpleDateFormat("yyyy/MM/dd");
-        SimpleDateFormat getformat =  new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat getformat =  new SimpleDateFormat("yyyy-MM-dd");
         try{
-            System.out.println(JsonObjIn.getString("datum"));
-//            huidigeDatum = getformat.parse(JsonObjIn.getString("datum"));
-//            String datumstring = String.format("%s/%s/%s", huidigeDatum.getYear(), huidigeDatum.getMonth(), huidigeDatum.getDay());
-//            huidigeDatum = requiredformat.parse(datumstring);
-            huidigeDatum = requiredformat.parse(JsonObjIn.getString("datum"));
+            huidigeDatum = getformat.parse(JsonObjIn.getString("datum"));
             System.out.println(huidigeDatum);
         }catch (ParseException e){
             System.out.println(e);
-            huidigeDatum = new Date("2019/02/20");
         }catch (NullPointerException e){
             System.out.println(e);
-            huidigeDatum = new Date("2019/02/20");
         }
 //        String userName = "zyad.osseyran@student.hu.nl";
         Map<String, Integer> aanwezigheid = new HashMap<>();
@@ -156,15 +162,37 @@ public class StudentController implements Handler {
 
     public void setAfgemeld(Conversation conversation){
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-        int studentNr = JsonObjIn.getInt("studentnr");
-        boolean beschikbaar = JsonObjIn.getBoolean("beschikbaar");
-        int lesID = JsonObjIn.getInt("lesID");
+        int studentNr = 1748635;
+        boolean beschikbaar = true;
+        int lesID = 10;
+        boolean works = false;
+
+        try{
+            studentNr = JsonObjIn.getInt("studentnr");
+            beschikbaar = JsonObjIn.getBoolean("beschikbaar");
+            lesID = JsonObjIn.getInt("lesID");
+            works = true;
+        } catch (NullPointerException e){
+            System.out.println(e);
+        }
+
         boolean gelukt = false;
-        for(Student s: informatieSysteem.getDeStudenten()){
-            if(s.getStudentNummer() == studentNr){
-                s.setBeschikbaarheid(lesID, beschikbaar);
-                gelukt = true;
-                break;
+        if(works) {
+            System.out.println("works");
+            for (Student s : informatieSysteem.getDeStudenten()) {
+                if (s.getStudentNummer() == studentNr) {
+                    s.setBeschikbaarheid(lesID, beschikbaar);
+                    for(Les l: informatieSysteem.getDeLessen()){
+                        if(l.getLesID() == lesID){
+                            System.out.println(beschikbaar);
+                            l.changeStatusLijst(s.getStudentNummer(), beschikbaar);
+                            l.changePresentieLijst(s.getStudentNummer(), !beschikbaar);
+                            System.out.println(l.getStudentAanwezigheid(s.getStudentNummer()));
+                        }
+                    }
+                    gelukt = true;
+                    break;
+                }
             }
         }
         if(gelukt){

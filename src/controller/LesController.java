@@ -64,7 +64,13 @@ public class LesController implements Handler {
      */
     private void returnLes(Conversation conversation) {
         JsonObject lJsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-        int lesID =lJsonObjIn.getInt("lesID");                      //Should be integer
+        int lesID;
+        try{
+             lesID=lJsonObjIn.getInt("lesID");                      //Should be integer
+        }catch (NullPointerException e){
+            System.out.println(e);
+            lesID = 10;
+        }
         JsonObjectBuilder sJsonObjectBuilder = Json.createObjectBuilder();
         //voeg alle attributen toe
         for(Les l : informatieSysteem.getDeLessen()){
@@ -76,24 +82,48 @@ public class LesController implements Handler {
         conversation.sendJSONMessage(lJsonOut); // terugsturen naar de Polymer-GUI!
     }
     //requites integer lesID and JsonObj presentie
+
     private void setLesPresentie(Conversation conversation){
         JsonObject lJsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-        Integer lesID = lJsonObjIn.getInt("lesID");
-        JsonObject presentie = lJsonObjIn.getJsonObject("presentie");
-        Map<Integer, Boolean> presentiemap = new HashMap<Integer, Boolean>();
-        Iterator<String> keyItr = presentie.keySet().iterator();
-        while(keyItr.hasNext()){
-            String key = keyItr.next();
-            boolean value = presentie.getBoolean(key);
-            presentiemap.put(Integer.parseInt(key), value);
-        }
-        for(Les l: informatieSysteem.getDeLessen()){
-            if(lesID == l.getLesID()){
-                l.setPresentieLijst(presentiemap);
-                conversation.sendJSONMessage("true");
+        //set dummydata
+        Integer lesID = 10;
+        boolean gelukt = false;
+        boolean works = false;
+        JsonObjectBuilder presentinit = Json.createObjectBuilder();
+        JsonObject presentie = presentinit.build();
+        for(Les l:informatieSysteem.getDeLessen()){
+            if(l.getLesID() == lesID){
+                presentie = l.getPresentieLijst();
             }
         }
-        conversation.sendJSONMessage("false");
+        //get real data
+        try {
+            lesID = lJsonObjIn.getInt("lesID");
+            presentie = lJsonObjIn.getJsonObject("presentie");
+            works = true;
+        }catch (NullPointerException e){
+            System.out.println(e);
+        }
+        Map<Integer, Boolean> presentiemap = new HashMap<Integer, Boolean>();
+        Iterator<String> keyItr = presentie.keySet().iterator();
+        if(works) {
+            while (keyItr.hasNext()) {
+                String key = keyItr.next();
+                boolean value = presentie.getBoolean(key);
+                presentiemap.put(Integer.parseInt(key), value);
+            }
+            for (Les l : informatieSysteem.getDeLessen()) {
+                if (lesID == l.getLesID()) {
+                    l.setPresentieLijst(presentiemap);
+                    gelukt = true;
+                }
+            }
+        }
+        String message = "false";
+        if(gelukt){
+            message = "true";
+        }
+        conversation.sendJSONMessage(message);
 
     }
 
@@ -125,10 +155,15 @@ public class LesController implements Handler {
 
     private void returnRooster(Conversation conversation){
         JsonObject lJsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-        String rol = lJsonObjIn.getString("rol");        //persoonsID maakt niet uit of docent of student
-        String username = lJsonObjIn.getString("username");
-//        String rol = "student";        //persoonsID maakt niet uit of docent of student
-//        String username = "zyad.osseyran@student.hu.nl";
+        String rol = "student";        //persoonsID maakt niet uit of docent of student
+        String username = "zyad.osseyran@student.hu.nl";
+        try {
+            rol = lJsonObjIn.getString("rol");        //persoonsID maakt niet uit of docent of student
+            username = lJsonObjIn.getString("username");
+        } catch (NullPointerException e){
+            System.out.println(e);
+        }
+
         JsonObjectBuilder roosterJsonBuilder = Json.createObjectBuilder();
         JsonObjectBuilder rObjectBuilder = Json.createObjectBuilder();
         int index = 0;
@@ -172,25 +207,24 @@ public class LesController implements Handler {
      */
     private void returnGemiddeldePresentie(Conversation conversation) {
         JsonObject lJsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-//        String lesCode = "TCIF-V1AUI-17_2018";
-//        String klasCode = "TICT-SIE-V1A";
-        String lesCode = lJsonObjIn.getString("lesCode");
-        String klasCode = lJsonObjIn.getString("klasCode");
-        Date huidigeDatum = new Date();
+        String lesCode = "TCIF-V1AUI-17_2018";
+        String klasCode = "TICT-SIE-V1A";
+        Date huidigeDatum = new Date("2019/02/20");
+
         SimpleDateFormat requiredformat =  new SimpleDateFormat("yyyy/MM/dd");
         SimpleDateFormat getformat =  new SimpleDateFormat("dd/MM/yyyy");
         try{
             huidigeDatum = getformat.parse(lJsonObjIn.getString("datum"));
             String datumstring = String.format("%s/%s/%s", huidigeDatum.getYear(), huidigeDatum.getMonth(), huidigeDatum.getDay());
             huidigeDatum = requiredformat.parse(datumstring);
-        }catch (ParseException e){
-            System.out.println(e);
-            huidigeDatum = new Date("2019/02/20");
+            lesCode = lJsonObjIn.getString("lesCode");
+            klasCode = lJsonObjIn.getString("klasCode");
         }catch (NullPointerException e){
             System.out.println(e);
-            huidigeDatum = new Date("2019/02/20");
         }
-//        String userName = "zyad
+        catch (ParseException e){
+            System.out.println(e);
+        }
         JsonObjectBuilder sJsonObjectBuilder = Json.createObjectBuilder();
         JsonObjectBuilder nr = Json.createObjectBuilder();
         Map<Integer, JsonObject> vakPresentieNr = informatieSysteem.getVakPresentiNr(lesCode, klasCode, huidigeDatum);
