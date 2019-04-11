@@ -107,7 +107,9 @@
                         <div class="col-6 " style="    border-right: 1px solid black; height: 100vh;">
                             <h3>Lessen</h3>
                             <template is="dom-repeat" items="{{vakken}}">
-                                <paper-button  value="" on-click="getKlassen" id="{{item.4.1}},{{item.0.1}}">{{item.2.1}}</paper-button><br>
+                                <paper-button  value="" on-click="getKlassen" id="{{item.4.1}},{{item.0.1}},{{item.1.1}}">
+                                    {{item.2.1}}
+                                </paper-button><br>
 
                             </template>
 
@@ -117,11 +119,7 @@
                             <table id="klas_id" style="    width: 100%;">
                                 <template is="dom-repeat" items="{{klassen}}">
                                     <paper-button  value="" on-click="getStudents" id="{{item}},{{index}}">{{item}}</paper-button><br>
-
                                 </template>
-
-
-
                             </table>
                         </div>
                     </div>
@@ -199,7 +197,10 @@
                     klassen: {
                         type: Array,
                     },
-                    tempKlasNr: {
+                    lescode: {
+                        type: String,
+                    },
+                    LesNr: {
                         type: Number,
                     },
                     lesCode: {
@@ -275,42 +276,46 @@ Date huidigeDatum = new Date("2019/02/20");*/
                     console.log(selector);
                     var klas = selector.split(',')[0];
                     this.klassen = klas.split(';');
-                    this.tempKlasNr = selector.split(',')[1];
+                    this.LesNr = selector.split(',')[1];
+                    this.lesCode = selector.split(',')[2];
                     this.klassen.pop();
-                    console.log(this.tempKlasNr);
-                    console.log(this.klassen);
+                    // console.log(this.lesCode);
+                    // console.log("lescode: "+ this.lesCode);
+                    // console.log(this.LesNr);
+                    // console.log(this.klassen);
 
                 },
                 getStudents:function(mouseclick) {
                     var selector = mouseclick.target.getAttribute('id').split(',')[0];
                     var index = mouseclick.target.getAttribute('id').split(',')[1];
                     this.studenten = selector;
-                    console.log(index);
+                    // console.log(index);
                     // console.log(this.studenten);
 
                     // var length = Object.entries(this.vakken[1][8][1]).length;
                     // console.log(this.vakken);
                     var studentsInfo = Object.entries(this.vakken);
-                    console.log(this.tempKlasNr);
-                    console.log(studentsInfo[index][1]);
-                    console.log(studentsInfo[index][1][1][1]);
+
+                    // console.log(studentsInfo);
+                    // console.log(studentsInfo[index]);
 
                     var student = [];
 
-                    for (var i=0; i<length; i ++) {
+                    for (var i=0; i< 5; i ++) {
 
 
                         var temp = Object.entries(studentsInfo);
-                        temp = Object.entries(temp[i][1][1]);
                         // console.log(temp);
                         student.push(temp);
                     }
-                    // console.log(student);
+                    console.log(student);
 
                     this.studenten = student;
                     // console.log(this.studenten);
-                    // this._gemiddelde_presentie_request_handler("TCIF-V1AUI-17_2018","TICT-SIE-V1A");;
-                    // this._gemiddelde_presentie_request_handler();
+                    console.log(this.lesCode);
+                    console.log(this.klassen[0]);
+                    this._gemiddelde_presentie_request_handler(this.lesCode,this.klassen);
+
 
 
                 },
