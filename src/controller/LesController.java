@@ -64,7 +64,13 @@ public class LesController implements Handler {
      */
     private void returnLes(Conversation conversation) {
         JsonObject lJsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-        int lesID =lJsonObjIn.getInt("lesID");                      //Should be integer
+        int lesID;
+        try{
+             lesID=lJsonObjIn.getInt("lesID");                      //Should be integer
+        }catch (NullPointerException e){
+            System.out.println(e);
+            lesID = 10;
+        }
         JsonObjectBuilder sJsonObjectBuilder = Json.createObjectBuilder();
         //voeg alle attributen toe
         for(Les l : informatieSysteem.getDeLessen()){

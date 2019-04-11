@@ -67,8 +67,12 @@ public class StudentController implements Handler {
 
     public void returnStudent(Conversation conversation){
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-        String userName = JsonObjIn.getString("userName");
-//        String userName = "zyad.osseyran@student.hu.nl";
+        String userName = "zyad.osseyran@student.hu.nl";
+        try{
+            userName = JsonObjIn.getString("userName");
+        } catch (NullPointerException e){
+            System.out.println(e);
+        }
         JsonObjectBuilder studentbuilder = Json.createObjectBuilder();
         JsonObjectBuilder rooster = Json.createObjectBuilder();
         JsonObjectBuilder aanwezigheid = Json.createObjectBuilder();
@@ -156,9 +160,18 @@ public class StudentController implements Handler {
 
     public void setAfgemeld(Conversation conversation){
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
-        int studentNr = JsonObjIn.getInt("studentnr");
-        boolean beschikbaar = JsonObjIn.getBoolean("beschikbaar");
-        int lesID = JsonObjIn.getInt("lesID");
+        int studentNr = 1748635;
+        boolean beschikbaar = true;
+        int lesID = 10;
+
+        try{
+            studentNr = JsonObjIn.getInt("studentnr");
+            beschikbaar = JsonObjIn.getBoolean("beschikbaar");
+            lesID = JsonObjIn.getInt("lesID");
+        } catch (NullPointerException e){
+            System.out.println(e);
+        }
+
         boolean gelukt = false;
         for(Student s: informatieSysteem.getDeStudenten()){
             if(s.getStudentNummer() == studentNr){

@@ -119,6 +119,9 @@ public class Les {
                     break;
                 }
             }
+            if(afgemeld){
+                aanwezig = false;
+            }
             JsonObjectBuilder studentpresentie = Json.createObjectBuilder();
             studentpresentie
                     .add("studentnummer", studentnr)
