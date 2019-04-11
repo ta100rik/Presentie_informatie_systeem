@@ -41,6 +41,9 @@ public abstract class Persoon {
 		return this.wachtwoord;
 	}
 
+	public void setWachtwoord(String wachtwoord){
+		this.wachtwoord = wachtwoord;
+	}
 	public String getGebruikersnaam() {
 		return this.gebruikersnaam;
 	}

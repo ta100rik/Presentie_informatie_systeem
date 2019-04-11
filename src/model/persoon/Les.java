@@ -86,7 +86,7 @@ public class Les {
 
     public JsonObject returnAsJson(){
         JsonObjectBuilder les = Json.createObjectBuilder();
-        DateFormat date = new SimpleDateFormat("yyyy-mm-dd hh:mm");
+        DateFormat date = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         String alledocenten ="";
         String alleklassen ="";
         for(String d: docenten){
@@ -131,6 +131,7 @@ public class Les {
 //            afmeldLijst.add(String.format("%s", index), studentafmelding);
 //            index+=1;
 //         }
+        System.out.println(date.format(startdatum));
         les
                 .add("lesID", lesID)
                 .add("lesCode", lesCode)
@@ -154,7 +155,7 @@ public class Les {
         for(String k: klassen){
             s.append(k+"; ");
         }
-        DateFormat date = new SimpleDateFormat("yyyy-mm-dd hh:mm");
+        DateFormat date = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         s.append(String.format("%s; %s; ", date.format(startdatum), date.format(einddatum)));
         /**Iterator it = presentieLijst.entrySet().iterator();
         while(it.hasNext()){

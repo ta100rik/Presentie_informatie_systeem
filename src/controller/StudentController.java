@@ -37,8 +37,34 @@ public class StudentController implements Handler {
             returnStudentAanwezigheid(conversation);
         } else if(conversation.getRequestedURI().startsWith("/student/presentie/setafmelden")){
             setAfgemeld(conversation);
+        } else if(conversation.getRequestedURI().startsWith("/student/setwachtwoord")){
+            setWachtwoord(conversation);
         }
     }
+
+    public void setWachtwoord(Conversation conversation){
+        JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
+
+        String huidigWachtwoord = JsonObjIn.getString("currPass");
+        String nieuwWachtwoord = JsonObjIn.getString("newPass");
+        String gebruikersnaam = JsonObjIn.getString("userName");
+
+        for(Student s: informatieSysteem.getDeStudenten()){
+            if(s.getGebruikersnaam().contains(gebruikersnaam)){
+                if(huidigWachtwoord.contentEquals(s.getWachtwoord())){
+                    s.setWachtwoord(nieuwWachtwoord);
+                    conversation.sendJSONMessage("wachtwoord gewijzigd");
+                }
+                else{
+                    conversation.sendJSONMessage("wachtwoord komt niet overeen!");
+                }
+            }
+            else{
+                conversation.sendJSONMessage("gebruiker bestaat niet!");
+            }
+        }
+    }
+
     public void returnStudent(Conversation conversation){
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
         String userName = JsonObjIn.getString("userName");
