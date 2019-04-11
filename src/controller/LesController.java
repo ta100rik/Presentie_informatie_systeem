@@ -72,14 +72,14 @@ public class LesController implements Handler {
         //voeg alle attributen toe
 
         for(Les l : informatieSysteem.getDeLessen()){
-            StringBuilder docenten = new StringBuilder();
-            StringBuilder klassen = new StringBuilder();
-            for(String d: l.getDocenten()){
-                docenten.append(d+"; ");
-            }
-            for (String k: l.getKlassen()){
-                klassen.append(k+"; ");
-            }
+//            StringBuilder docenten = new StringBuilder();
+//            StringBuilder klassen = new StringBuilder();
+//            for(String d: l.getDocenten()){
+//                docenten.append(d+"; ");
+//            }
+//            for (String k: l.getKlassen()){
+//                klassen.append(k+"; ");
+//            }
             if(lesID == l.getLesID()) {
                 sJsonObjectBuilder.add("les", l.returnAsJson());
             }
