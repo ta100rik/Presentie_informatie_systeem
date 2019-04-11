@@ -109,22 +109,16 @@ public class StudentController implements Handler {
         JsonObject JsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
         System.out.println(JsonObjIn.toString());
         String userName = JsonObjIn.getString("userName");
-        Date huidigeDatum = new Date();
+        Date huidigeDatum = new Date("2019/02/20");
         SimpleDateFormat requiredformat =  new SimpleDateFormat("yyyy/MM/dd");
-        SimpleDateFormat getformat =  new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat getformat =  new SimpleDateFormat("yyyy-MM-dd");
         try{
-            System.out.println(JsonObjIn.getString("datum"));
-//            huidigeDatum = getformat.parse(JsonObjIn.getString("datum"));
-//            String datumstring = String.format("%s/%s/%s", huidigeDatum.getYear(), huidigeDatum.getMonth(), huidigeDatum.getDay());
-//            huidigeDatum = requiredformat.parse(datumstring);
-            huidigeDatum = requiredformat.parse(JsonObjIn.getString("datum"));
+            huidigeDatum = getformat.parse(JsonObjIn.getString("datum"));
             System.out.println(huidigeDatum);
         }catch (ParseException e){
             System.out.println(e);
-            huidigeDatum = new Date("2019/02/20");
         }catch (NullPointerException e){
             System.out.println(e);
-            huidigeDatum = new Date("2019/02/20");
         }
 //        String userName = "zyad.osseyran@student.hu.nl";
         Map<String, Integer> aanwezigheid = new HashMap<>();
@@ -184,9 +178,18 @@ public class StudentController implements Handler {
 
         boolean gelukt = false;
         if(works) {
+            System.out.println("works");
             for (Student s : informatieSysteem.getDeStudenten()) {
                 if (s.getStudentNummer() == studentNr) {
                     s.setBeschikbaarheid(lesID, beschikbaar);
+                    for(Les l: informatieSysteem.getDeLessen()){
+                        if(l.getLesID() == lesID){
+                            System.out.println(beschikbaar);
+                            l.changeStatusLijst(s.getStudentNummer(), beschikbaar);
+                            l.changePresentieLijst(s.getStudentNummer(), !beschikbaar);
+                            System.out.println(l.getStudentAanwezigheid(s.getStudentNummer()));
+                        }
+                    }
                     gelukt = true;
                     break;
                 }

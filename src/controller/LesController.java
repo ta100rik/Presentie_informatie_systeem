@@ -82,6 +82,7 @@ public class LesController implements Handler {
         conversation.sendJSONMessage(lJsonOut); // terugsturen naar de Polymer-GUI!
     }
     //requites integer lesID and JsonObj presentie
+
     private void setLesPresentie(Conversation conversation){
         JsonObject lJsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
         //set dummydata
