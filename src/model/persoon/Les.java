@@ -55,6 +55,9 @@ public class Les {
         }
         return presentielijst.build();
     }
+    public Map<Integer, Boolean> getPresentieMap(){
+        return presentieLijst;
+    }
 
     public String getLesCode(){
         return lesCode;

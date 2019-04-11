@@ -343,7 +343,8 @@ public class PrIS {
 							aantalLessenStudent.put(s.getStudentNummer(), aantalvak);
 							aantalLessenPresent.put(s.getStudentNummer(), aanwezig);
 						} else {
-							if (l.getPresentieLijst().get(s.getStudentNummer())) {
+							System.out.println();
+							if (l.getPresentieMap().get(s.getStudentNummer())) {
 								aantalLessenPresent.put(s.getStudentNummer(), 1.00);
 							} else {
 								aantalLessenPresent.put(s.getStudentNummer(), 0.00);

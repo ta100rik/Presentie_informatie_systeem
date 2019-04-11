@@ -87,6 +87,7 @@ public class LesController implements Handler {
         //set dummydata
         Integer lesID = 10;
         boolean gelukt = false;
+        boolean works = false;
         JsonObjectBuilder presentinit = Json.createObjectBuilder();
         JsonObject presentie = presentinit.build();
         for(Les l:informatieSysteem.getDeLessen()){
@@ -98,20 +99,23 @@ public class LesController implements Handler {
         try {
             lesID = lJsonObjIn.getInt("lesID");
             presentie = lJsonObjIn.getJsonObject("presentie");
+            works = true;
         }catch (NullPointerException e){
             System.out.println(e);
         }
         Map<Integer, Boolean> presentiemap = new HashMap<Integer, Boolean>();
         Iterator<String> keyItr = presentie.keySet().iterator();
-        while(keyItr.hasNext()){
-            String key = keyItr.next();
-            boolean value = presentie.getBoolean(key);
-            presentiemap.put(Integer.parseInt(key), value);
-        }
-        for(Les l: informatieSysteem.getDeLessen()){
-            if(lesID == l.getLesID()){
-                l.setPresentieLijst(presentiemap);
-                gelukt = true;
+        if(works) {
+            while (keyItr.hasNext()) {
+                String key = keyItr.next();
+                boolean value = presentie.getBoolean(key);
+                presentiemap.put(Integer.parseInt(key), value);
+            }
+            for (Les l : informatieSysteem.getDeLessen()) {
+                if (lesID == l.getLesID()) {
+                    l.setPresentieLijst(presentiemap);
+                    gelukt = true;
+                }
             }
         }
         String message = "false";
