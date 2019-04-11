@@ -89,7 +89,7 @@ public class StudentController implements Handler {
                 int lesindex = 0;
                 for (Les l : s.getRooster()) {
                     JsonObjectBuilder lesJson = Json.createObjectBuilder();
-                    lesJson.add("les", l.returnAsJson()).add("aanwezig", l.getPresentieLijst().get(s.getStudentNummer()));
+                    lesJson.add("les", l.returnAsJson()).add("aanwezig", l.getPresentieMap().get(s.getStudentNummer()));
                     rooster.add(String.format("%s", lesindex), lesJson);
                     lesindex += 1;
                 }
