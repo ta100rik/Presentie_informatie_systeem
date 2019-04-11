@@ -337,10 +337,12 @@ public class PrIS {
 						if (aantalLessenPresent.containsKey(s.getStudentNummer())) {
 							double aantalvak = aantalLessenStudent.get(s.getStudentNummer()) + 1.00;
 							double aanwezig = aantalLessenPresent.get(s.getStudentNummer());
-							if (s.getStudentNummer() == 1748635){
-								aanwezig=2.00;
-							}
-							else if (s.getBeschikbaarheid().containsKey(l.getLesID())) {
+//							uncomment for testing
+//							if (s.getStudentNummer() == 1748635){
+//								aanwezig=2.00;
+//							}
+//							else
+							if (s.getBeschikbaarheid().containsKey(l.getLesID())) {
 								if(s.getBeschikbaarheid().containsKey(l.getLesID())) {
 									aanwezig += 1.00;
 								}
