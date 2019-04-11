@@ -4,12 +4,16 @@ import model.PrIS;
 import model.persoon.Docent;
 import model.persoon.Les;
 import model.persoon.Student;
+import org.glassfish.json.JsonParserImpl;
 import server.Conversation;
 import server.Handler;
-
+import javax.json.*;
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.stream.JsonParser;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -76,6 +80,9 @@ public class LesController implements Handler {
         for(Les l : informatieSysteem.getDeLessen()){
             if(lesID == l.getLesID()) {
                 sJsonObjectBuilder.add("les", l.returnAsJson());
+//                System.out.println(l.returnAsJson());
+                System.out.println(l.getPresentieLijst());
+                System.out.println(l.getStatusJson());
             }
         }
         String lJsonOut = sJsonObjectBuilder.build().toString();
@@ -99,25 +106,43 @@ public class LesController implements Handler {
         //get real data
         try {
             lesID = lJsonObjIn.getInt("lesID");
-            presentie = lJsonObjIn.getJsonObject("presentie");
-            works = true;
+            System.out.println(lJsonObjIn.getString("presentie"));
+            String presentieArrayString = lJsonObjIn.getString("presentie");
+            System.out.println(); lJsonObjIn.get("presentie");
+            String[] presentieString = presentieArrayString.split(",");
+            for(String s: presentieString){
+                String[] slist = s.split(":");
+                presentinit.add(slist[0].replace("{","").replace("}","").replace("\"",""), Boolean.parseBoolean(slist[1]));
+            }
+            presentie = presentinit.build();
+
+            System.out.println("Presentie: "+presentie);
+            if(!presentie.isEmpty()) {
+                works = true;
+            }
         }catch (NullPointerException e){
             System.out.println(e);
         }
-        Map<Integer, Boolean> presentiemap = new HashMap<Integer, Boolean>();
+//        catch (ClassCastException e){
+//            System.out.println(e);
+//        }
+        Map<Integer, Boolean> presentieLijst = new HashMap<>();
         Iterator<String> keyItr = presentie.keySet().iterator();
         if(works) {
             while (keyItr.hasNext()) {
                 String key = keyItr.next();
                 boolean value = presentie.getBoolean(key);
-                presentiemap.put(Integer.parseInt(key), value);
+                presentieLijst.put(Integer.parseInt(key), value);
+
             }
             for (Les l : informatieSysteem.getDeLessen()) {
                 if (lesID == l.getLesID()) {
-                    l.setPresentieLijst(presentiemap);
+                   l.setPresentieLijst(presentieLijst);
                     gelukt = true;
                 }
             }
+
+
         }
         String message = "false";
         if(gelukt){
@@ -211,12 +236,9 @@ public class LesController implements Handler {
         String klasCode = "TICT-SIE-V1A";
         Date huidigeDatum = new Date("2019/02/20");
 
-        SimpleDateFormat requiredformat =  new SimpleDateFormat("yyyy/MM/dd");
-        SimpleDateFormat getformat =  new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat getformat =  new SimpleDateFormat("yyyy-MM-dd");
         try{
             huidigeDatum = getformat.parse(lJsonObjIn.getString("datum"));
-            String datumstring = String.format("%s/%s/%s", huidigeDatum.getYear(), huidigeDatum.getMonth(), huidigeDatum.getDay());
-            huidigeDatum = requiredformat.parse(datumstring);
             lesCode = lJsonObjIn.getString("lesCode");
             klasCode = lJsonObjIn.getString("klasCode");
         }catch (NullPointerException e){
