@@ -195,8 +195,11 @@ public class LesController implements Handler {
 //
             huidigeDatum =format.parse(lJsonObjIn.getString("datum"));
         }catch (ParseException e){
-            huidigeDatum = new Date("2019-02-20");
-            System.out.println(e);
+            System.out.println(e.toString());
+            huidigeDatum = new Date("2019/02/20");
+        }catch (NullPointerException e){
+            System.out.println(e.toString());
+            huidigeDatum = new Date("2019/02/20");
         }
         JsonObjectBuilder sJsonObjectBuilder = Json.createObjectBuilder();
         JsonObjectBuilder nr = Json.createObjectBuilder();

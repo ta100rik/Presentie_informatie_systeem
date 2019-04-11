@@ -97,7 +97,7 @@ public class Les {
         }
 
         for(Klas k: klassenarray){
-            System.out.println(k.getKlasCode());
+//            System.out.println(k.getKlasCode());
             for(Student s: k.getStudenten()){
                 statusLijst.put(s.getStudentNummer(),s.getBeschikbaarheid().get(this.getLesID()));
             }
@@ -131,7 +131,7 @@ public class Les {
 //            afmeldLijst.add(String.format("%s", index), studentafmelding);
 //            index+=1;
 //         }
-        System.out.println(date.format(startdatum));
+//        System.out.println(date.format(startdatum));
         les
                 .add("lesID", lesID)
                 .add("lesCode", lesCode)

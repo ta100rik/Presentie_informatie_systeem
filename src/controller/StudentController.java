@@ -101,7 +101,10 @@ public class StudentController implements Handler {
         try{
             huidigeDatum = format.parse(JsonObjIn.getString("datum"));
         }catch (ParseException e){
-            conversation.sendJSONMessage(e.toString());
+            System.out.println(e.toString());
+            huidigeDatum = new Date("2019/02/20");
+        }catch (NullPointerException e){
+            System.out.println(e.toString());
             huidigeDatum = new Date("2019/02/20");
         }
 //        String userName = "zyad.osseyran@student.hu.nl";
@@ -113,8 +116,6 @@ public class StudentController implements Handler {
             if(s.getGebruikersnaam().contains(userName)) {
                 for (Les l : s.getRooster()) {
                     if (l.getStartdatum().before(huidigeDatum)) {
-                        System.out.println(l.getLesCode() + l.getStartdatum());
-                        System.out.println(l.getStudentAanwezigheid(s.getStudentNummer()));
                         boolean aanwezig = l.getStudentAanwezigheid(s.getStudentNummer());
                         int aanwezigheidcounter = 0;
                         int totaalcounter = 0;
@@ -134,11 +135,9 @@ public class StudentController implements Handler {
         }
         for(Map.Entry entry: totaal.entrySet()){
             String lescode = entry.getKey().toString();
-            System.out.println(lescode);
+
             int aanwezig = aanwezigheid.get(entry.getKey().toString());
             int totaalaantal = Integer.parseInt(entry.getValue().toString());
-            System.out.println(aanwezig+"||");
-            System.out.println(totaalaantal);
             if(!lescode.contains("TOETS")) {
                 returnObject.add(lescode, aanwezig / totaalaantal * 100);
             }
