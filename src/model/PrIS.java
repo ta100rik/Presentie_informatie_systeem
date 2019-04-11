@@ -317,6 +317,7 @@ public class PrIS {
 		for (Les l : getDeLessen()) {
 			if (l.getLesCode().contains(lesCode)) {
 				lessen.add(l);
+				System.out.println(lesCode);
 			}
 		}
 		//define group
@@ -370,11 +371,16 @@ public class PrIS {
 			JsonObjectBuilder aanwezigheid = Json.createObjectBuilder();
 			double aantalAanwezig= Double.parseDouble(aantalLessenPresent.get(studentnr).toString());
 			double aantalLessen = Double.parseDouble(aantalLessenStudent.get(studentnr).toString());
+			String gemiddeldePresentie = String.format("%s", 0.00);
+			if(aantalAanwezig>0.00 && aantalLessen>0.00)
+            {
+                gemiddeldePresentie = String.format("%s",aantalAanwezig/aantalLessen*100);
+            }
             System.out.println(studentnr+" aantal: "+aantalLessen+" aanwezig: "+aantalAanwezig);
             aanwezigheid
 //					.add("lessenTotaal", df2.format(Double.parseDouble(aantalLessenStudent.get(studentnr).toString())))
 //					.add("lessenAanwezig", df2.format(Double.parseDouble(aantalLessenPresent.get(studentnr).toString())))
-					.add("gemiddeldeAanwezigheid", String.format("%s",aantalAanwezig/aantalLessen*100));
+					.add("gemiddeldeAanwezigheid", gemiddeldePresentie );
 			VakPresentieNr.put(studentnr, aanwezigheid.build());
 		}
 
@@ -390,12 +396,14 @@ public class PrIS {
 			if(s.getStudentNummer() == studentnr){
 				JsonObject presentie = vakPresentieNr.get(studentnr);
 //				System.out.println(presentie.get("lessenTotaal"));
+    			String gemiddeldePresentie = presentie.getString("gemiddeldeAanwezigheid");
+//    			System.out.println(gemiddeldePresentie);
 				NaamEnAanwezigheid
 						.add("studentnr", studentnr)
 						.add("naam", s.getVoornaam()+" "+s.getVolledigeAchternaam())
 //						.add("lessenTotaal", Double.parseDouble(presentie.getString("lessenTotaal")))
 //						.add("lessenAanwezig", Double.parseDouble(presentie.getString("lessenAanwezig")))
-						.add("gemiddeldeAanwezigheid", Double.parseDouble((presentie.getString("gemiddeldeAanwezigheid"))));
+						.add("gemiddeldeAanwezigheid", Double.parseDouble(gemiddeldePresentie));
 			}
 		}
 		JsonObject returnObj = NaamEnAanwezigheid.build();
