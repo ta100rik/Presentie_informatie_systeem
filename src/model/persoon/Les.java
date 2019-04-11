@@ -122,11 +122,12 @@ public class Les {
         for(Map.Entry presentie : getPresentieLijst().entrySet()) {
             boolean aanwezig = Boolean.parseBoolean(presentie.getValue().toString());
             String studentnr =  presentie.getKey().toString();
+//            System.out.println(studentnr);
             boolean afgemeld = getStatusLijst().get(Integer.parseInt(studentnr));
             if (afgemeld) {
                 aanwezig = false;
             }
-            System.out.println("Student\n"+studentnr+"\n"+aanwezig+"\n"+afgemeld);
+//            System.out.println("\n"+studentnr+"\n"+aanwezig+"\n"+afgemeld);
             String studentnaam = studentnaamlijst.get(Integer.parseInt(studentnr));
 
 
@@ -139,8 +140,8 @@ public class Les {
             presentieLijst.add(String.format("%s", index), studentpresentie);
             index += 1;
 
-            System.out.println(lesID + " aanwezig: " + aanwezig);
-            System.out.println(lesID + " afgemeld: " + afgemeld);
+//            System.out.println(lesID + " aanwezig: " + aanwezig);
+//            System.out.println(lesID + " afgemeld: " + afgemeld);
 
 
         }

@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Struct;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -356,12 +357,13 @@ public class PrIS {
 			}
 		}
 
+		DecimalFormat df2 = new DecimalFormat(".##");
 		for(Map.Entry AantalLessen: aantalLessenStudent.entrySet()){
 			int studentnr =Integer.parseInt(AantalLessen.getKey().toString());
 			JsonObjectBuilder aanwezigheid = Json.createObjectBuilder();
 			aanwezigheid
-					.add("lessenTotaal", aantalLessenStudent.get(studentnr))
-					.add("lessenAanwezig", aantalLessenPresent.get(studentnr));
+					.add("lessenTotaal", df2.format(aantalLessenStudent.get(studentnr)))
+					.add("lessenAanwezig", df2.format(aantalLessenPresent.get(studentnr)));
 			VakPresentieNr.put(studentnr, aanwezigheid.build());
 		}
 		return VakPresentieNr;
