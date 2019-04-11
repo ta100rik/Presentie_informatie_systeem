@@ -376,11 +376,12 @@ public class PrIS {
 		for(Student s: getDeStudenten()){
 			if(s.getStudentNummer() == studentnr){
 				JsonObject presentie = vakPresentieNr.get(studentnr);
+				System.out.println(presentie.get("lessenTotaal"));
 				NaamEnAanwezigheid
 						.add("studentnr", studentnr)
 						.add("naam", s.getVoornaam()+" "+s.getVolledigeAchternaam())
-						.add("lessenTotaal", presentie.getInt("lessenTotaal"))
-						.add("lessenAanwezig", presentie.getInt("lessenAanwezig"));
+						.add("lessenTotaal", Double.parseDouble(presentie.getString("lessenTotaal")))
+						.add("lessenAanwezig", Double.parseDouble(presentie.getString("lessenAanwezig")));
 			}
 		}
 		JsonObject returnObj = NaamEnAanwezigheid.build();

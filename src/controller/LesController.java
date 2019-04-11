@@ -241,6 +241,7 @@ public class LesController implements Handler {
 
         SimpleDateFormat getformat =  new SimpleDateFormat("yyyy-MM-dd");
         try{
+            System.out.println(lJsonObjIn.get("klasCode"));
             huidigeDatum = getformat.parse(lJsonObjIn.getString("datum"));
             lesCode = lJsonObjIn.getString("lesCode");
             klasCode = lJsonObjIn.getString("klasCode");
