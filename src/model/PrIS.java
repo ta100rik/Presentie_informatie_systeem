@@ -328,31 +328,36 @@ public class PrIS {
 			}
 		}
 		//get presence and amount of classes per student
-		for (Student s : deStudenten) {
+
 			for (Les l : lessen) {
+				for (Student s : deStudenten) {
 //				System.out.println(l.getStartdatum() +" "+datum);
 				if (s.getRooster().contains(l) && l.getStartdatum().before(datum)) {
 					if (klas.getStudenten().contains(s)) {
 						if (aantalLessenPresent.containsKey(s.getStudentNummer())) {
 							double aantalvak = aantalLessenStudent.get(s.getStudentNummer()) + 1.00;
 							double aanwezig = aantalLessenPresent.get(s.getStudentNummer());
-							if (s.getStudentNummer() == 1748635){
-								aanwezig=2.00;
-							}
-							else if (s.getBeschikbaarheid().get(l.getLesID())) {
-								aanwezig += 1.00;
+//							uncomment for testing
+//							if (s.getStudentNummer() == 1748635){
+//								aanwezig=2.00;
+//							}
+//							else
+							if (s.getBeschikbaarheid().containsKey(l.getLesID())) {
+								if(s.getBeschikbaarheid().containsKey(l.getLesID())) {
+									aanwezig += 1.00;
+								}
 							}
 							aantalLessenStudent.put(s.getStudentNummer(), aantalvak);
 							aantalLessenPresent.put(s.getStudentNummer(), aanwezig);
 						} else {
-							System.out.println();
-							if (l.getPresentieMap().get(s.getStudentNummer())) {
+							if (l.getPresentieMap().containsKey(s.getStudentNummer())) {
 								aantalLessenPresent.put(s.getStudentNummer(), 1.00);
 							} else {
 								aantalLessenPresent.put(s.getStudentNummer(), 0.00);
 							}
 							aantalLessenStudent.put(s.getStudentNummer(), 1.00);
 						}
+						System.out.println(aantalLessenPresent);
 					}
 				}
 			}
@@ -363,8 +368,9 @@ public class PrIS {
 			int studentnr =Integer.parseInt(AantalLessen.getKey().toString());
 			JsonObjectBuilder aanwezigheid = Json.createObjectBuilder();
 			aanwezigheid
-					.add("lessenTotaal", df2.format(aantalLessenStudent.get(studentnr)))
-					.add("lessenAanwezig", df2.format(aantalLessenPresent.get(studentnr)));
+//					.add("lessenTotaal", df2.format(Double.parseDouble(aantalLessenStudent.get(studentnr).toString())))
+//					.add("lessenAanwezig", df2.format(Double.parseDouble(aantalLessenPresent.get(studentnr).toString())))
+					.add("gemiddeldeAanwezigheid", df2.format(Double.parseDouble(aantalLessenPresent.get(studentnr).toString())/Double.parseDouble(aantalLessenStudent.get(studentnr).toString())*100));
 			VakPresentieNr.put(studentnr, aanwezigheid.build());
 		}
 		return VakPresentieNr;
@@ -376,11 +382,13 @@ public class PrIS {
 		for(Student s: getDeStudenten()){
 			if(s.getStudentNummer() == studentnr){
 				JsonObject presentie = vakPresentieNr.get(studentnr);
+				System.out.println(presentie.get("lessenTotaal"));
 				NaamEnAanwezigheid
 						.add("studentnr", studentnr)
 						.add("naam", s.getVoornaam()+" "+s.getVolledigeAchternaam())
-						.add("lessenTotaal", presentie.getInt("lessenTotaal"))
-						.add("lessenAanwezig", presentie.getInt("lessenAanwezig"));
+//						.add("lessenTotaal", Double.parseDouble(presentie.getString("lessenTotaal")))
+//						.add("lessenAanwezig", Double.parseDouble(presentie.getString("lessenAanwezig")))
+						.add("gemiddeldeAanwezigheid", Double.parseDouble((presentie.getString("gemiddeldeAanwezigheid"))));
 			}
 		}
 		JsonObject returnObj = NaamEnAanwezigheid.build();
