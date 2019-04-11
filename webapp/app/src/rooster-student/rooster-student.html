@@ -179,10 +179,11 @@
         show_afgemeld:function(mouseclick) {
           // console.log(mouseclick.path[2].attributes[0].value);
           var selector =mouseclick.target.getAttribute('id');
-          mouseclick.target.disabled = true;
-          mouseclick.target.style = "background-color:grey;";
+
           var x = confirm("weet je zeker dat je wilt afmelden?");
           if(x){
+            mouseclick.target.disabled = true;
+            mouseclick.target.style = "background-color:grey;";
             var lesinfo = this._c_lessen[selector][1];
             var studentid = this.c_studentinfo[0];
 

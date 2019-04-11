@@ -295,8 +295,8 @@
           var aanwezig_prec = countaanwezig / totaal *100;
 
           var afwezig_prec = countafwezig / totaal *100;
-          this.set('present', aanwezig_prec);
-          this.set('notpresent',afwezig_prec);
+          this.set('present', (aanwezig_prec).toFixed(0));
+          this.set('notpresent',(afwezig_prec).toFixed(0));
           this.setpresentchart();
 
           // sander.degans@student.hu.nl
