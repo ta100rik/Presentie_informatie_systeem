@@ -136,22 +136,22 @@
 
                 <!-- Fill table with data -->
 
-                <template is="dom-repeat" items="{{studenten}}" as="Student">
+                <template id="looper" is="dom-repeat" items="{{studenten}}" as="Student">
                     <tr id="[[Student.0]]">
                         <td>[[Student.3]]</td>
                         <td>[[Student.0]]</td>
-
+                        <td><button class$="{{Student.4}}" id="[[Student.0]]test" value="[[Student.0]]"  on-click="test" data="[[Student.1]]"></button></td>
+                        <!--<td></td>-->
                         <!-- If present green button -->
-                        <template is="dom-if" if="[[Student.1]]">
-                            <td><button class="presentbutton" id="[[Student.0]]test" value="[[Student.0]]" on-click="test">[[Student.1]]</button></td>
+                        <!--<template id="run2" is="dom-if" if="[[Student.1]]">-->
                             <!-- <td><button class="defaultbutton" id="[[Student.studentnum]]def" value="[[Student.studentnum]]" on-click="absenceHandler"></button></td> -->
-                        </template>
+                        <!--</template>-->
 
-                        <!-- If absence red button -->
-                        <template is="dom-if" if="[[Student.2]]">
-                            <!-- <td><button class="defaultbutton" id="[[Student.studentnum]]def" value="[[Student.studentnum]]" on-click="presenceHandler"></button></td> -->
-                            <td><button class="absentbutton" id="[[Student.0]]test" value="[[Student.0]]" on-click="test">[[Student.2]]</button></td>
-                        </template>
+                        <!--&lt;!&ndash; If absence red button &ndash;&gt;-->
+                        <!--<template id="run3" is="dom-if" if="[[Student.2]]">-->
+                            <!--&lt;!&ndash; <td><button class="defaultbutton" id="[[Student.studentnum]]def" value="[[Student.studentnum]]" on-click="presenceHandler"></button></td> &ndash;&gt;-->
+                            <!--<td><button class="absentbutton" id="[[Student.0]]test" value="[[Student.0]]" on-click="test" data="[[Student.1]]">[[Student.1]]</button></td>-->
+                        <!--</template>-->
                     </tr>
 
 
@@ -208,6 +208,7 @@
                     },
                     studenten: {
                         type: Array,
+                        notify:true
                     },
                     c_visible: {
                         type: Boolean,                                      /* true when element is the active visible item */
@@ -219,24 +220,59 @@
 
                     c_lesid :{
                         type: Number,
+                        notify:true
                     }
                 },
                 _initializing : function() {
 
                     if (this.c_visible) {                                 // zodra zichtbaar geworden moet er wat worden gedaan
                         if (this.c_rol=="docent") {
+                            Polymer.RenderStatus.flush();
                             this.loaddata();
+                            // this._changer();
+                            // this.push('studenten', 'test');
+                            // this.$.looper.render();
+                            // this.fire('render', {render: true});
+                            // console.log(this.$.looper);
                             // this._lesrooster_ophalen_request_handler();    //    haal info op van server
                         } else {                                            // na handmatige url wijziging zonder login
                            this._go_home();                                  /* het sluiten van deze error verwijst  */                                                  /* terug naar home page */
                         }
                     }
                 },
+                // _changer:function(){
+                //     var present = this.shadowRoot.querySelector('table').getElementsByClassName('presentbutton');
+                //     var absent = this.shadowRoot.querySelector('table').getElementsByClassName('absentbutton');
+                //     console.log(absent);
+                //     console.log(present);
+                //     for(var i  = 0; i < present.length;i++){
+                //         // console.log(present[i]);
+                //         if(present[i].data){
+                //             present[i].classList.remove("presentbutton");
+                //             present[i].classList.add("absentbutton");
+                //             // present[i].style  = "background-color:green";
+                //         }else{
+                //             present[i].style  = "background-color:red";
+                //         }
+                //     }
+                //     for(var i  = 0; i < absent.length;i++){
+                //         console.log(absent[i]);
+                //         if(absent[i].data){
+                //             absent[i].style  = "background-color:green";
+                //         }else{
+                //
+                //             absent[i].style  = "background-color:red";
+                //
+                //         }
+                //     }
+                //
+                // },
                 loaddata: function(e){
 
                     var lApp = document.querySelector('my-app');
                     // console.log(lApp._les_id);
                     this.set('c_lesid',lApp._les_id);
+                    this.notifyPath('c_lesid');
                     this.ophalen_lijst();
                 },
                 send_presentie:function(array){
@@ -260,12 +296,12 @@
                     this.$.ajax_studentlijst_ophalen.generateRequest();
                 },
                 _return_lijst:function(response){
-                    console.log(response.detail.response);
+                    // console.log(response.detail.response);
                     var DummyStudents = Object.entries(response.detail.response);
                     this.set('_c_lessen',DummyStudents);
                     DummyStudents = Object.entries(DummyStudents[0][1])[8][1];
                     this.set('DummyStudents',Object.entries(DummyStudents));
-                    console.log(DummyStudents);
+                    // console.log(DummyStudents);
                     var length = Object.entries(DummyStudents).length;
                     // console.log(Object.entries(DummyStudents)[1][1]);
                     var temp;
@@ -283,6 +319,12 @@
                         sInfo.push(student[1][1]);
                         sInfo.push(student[2][1]);
                         sInfo.push(student[3][1]);
+                        if(student[1][1]){
+                            sInfo.push('presentbutton');
+                        }else{
+                            sInfo.push('absentbutton');
+                        }
+
                         // console.log(sInfo);
                         list.push(sInfo);
                     }
@@ -292,7 +334,28 @@
 
                     temp = Object.entries(temp);
                     // console.log(temp);
-                    this.studenten = list;
+                    this.set('studenten',list);
+                    // console.log(list);
+                    // this.set("studenten.0.0",'12');
+                    // for(var i = 0; i < list.length;i++){
+                    //     // console.log(list[i]);
+                    //
+                    //     this.notifyPath('studenten.' + i);
+                    //     for(var x = 0;x < list[i].length;x++){
+                    //         // console.log("studenten." + i +'.'+ x);
+                    //         this.notifyPath("studenten." + i +'.'+ x);
+                    //     }
+                    //     // console.log(this.get('studenten'));
+                    // }
+                    // console.log(this.get('studenten'));
+                    // console.log(this.$);
+                    // this.$.looper.renderedItemCount();
+                    // this.$.looper.observe();
+                    // this.$.looper.targetFramerate();
+                    // this.$.looper.__renderDebouncer._asyncModule.run();
+
+
+                    // this.studenten = list;
                 },
                 test: function(e){
                     var DummyStudents = this.get(['studenten']);
@@ -336,7 +399,18 @@
                         // console.log(DummyStudents[i])
                     }
                     console.log(DummyStudents);
+                    // console.log(DummyStudents);
                     this.set('studenten',DummyStudents);
+                    // for(var i = 0; i < DummyStudents.length;i++){
+                    //     // console.log(list[i]);
+                    //     this.notifyPath('studenten.' + i);
+                    //     for(var x = 0;x < DummyStudents[i].length;x++){
+                    //         // console.log("studenten." + i +'.'+ x);
+                    //         this.notifyPath("studenten." + i +'.'+ x);
+                    //     }
+                    //     // console.log(this.get('studenten'));
+                    // }
+                    // this.notifyPath('studenten');
 
                 },
 
