@@ -86,6 +86,7 @@ public class LesController implements Handler {
         JsonObject lJsonObjIn = (JsonObject) conversation.getRequestBodyAsJSON();
         //set dummydata
         Integer lesID = 10;
+        boolean gelukt = false;
         JsonObjectBuilder presentinit = Json.createObjectBuilder();
         JsonObject presentie = presentinit.build();
         for(Les l:informatieSysteem.getDeLessen()){
@@ -110,10 +111,14 @@ public class LesController implements Handler {
         for(Les l: informatieSysteem.getDeLessen()){
             if(lesID == l.getLesID()){
                 l.setPresentieLijst(presentiemap);
-                conversation.sendJSONMessage("true");
+                gelukt = true;
             }
         }
-        conversation.sendJSONMessage("false");
+        String message = "false";
+        if(gelukt){
+            message = "true";
+        }
+        conversation.sendJSONMessage(message);
 
     }
 
