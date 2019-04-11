@@ -256,7 +256,9 @@
           var lApp = document.querySelector('my-app');
           this.$.ajax_student_les.contentType="application/json";
           this.$.ajax_student_les.body={
-            "userName":this.c_username
+            "userName":this.c_username,
+
+            "datum": "2019/02/03"
           };
           this.$.ajax_student_les.generateRequest();
         },
@@ -271,8 +273,7 @@
           // console.log();
           this.$.ajax_student_ophalen.contentType="application/json";
           this.$.ajax_student_ophalen.body={
-            "userName":this.c_username,
-            "datum": "2019/02/03"
+            "userName":this.c_username
 
           };
           this.$.ajax_student_ophalen.generateRequest();
