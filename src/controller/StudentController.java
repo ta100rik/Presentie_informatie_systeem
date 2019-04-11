@@ -171,21 +171,25 @@ public class StudentController implements Handler {
         int studentNr = 1748635;
         boolean beschikbaar = true;
         int lesID = 10;
+        boolean works = false;
 
         try{
             studentNr = JsonObjIn.getInt("studentnr");
             beschikbaar = JsonObjIn.getBoolean("beschikbaar");
             lesID = JsonObjIn.getInt("lesID");
+            works = true;
         } catch (NullPointerException e){
             System.out.println(e);
         }
 
         boolean gelukt = false;
-        for(Student s: informatieSysteem.getDeStudenten()){
-            if(s.getStudentNummer() == studentNr){
-                s.setBeschikbaarheid(lesID, beschikbaar);
-                gelukt = true;
-                break;
+        if(works) {
+            for (Student s : informatieSysteem.getDeStudenten()) {
+                if (s.getStudentNummer() == studentNr) {
+                    s.setBeschikbaarheid(lesID, beschikbaar);
+                    gelukt = true;
+                    break;
+                }
             }
         }
         if(gelukt){
