@@ -140,8 +140,8 @@ public class LesController implements Handler {
                         l.setPresentieLijst(presentieLijst);
                         gelukt = true;
                     }
-                    if(s.getRooster().contains(l)){
-                        String studentnr = String.format("%s",s.getStudentNummer());
+                    String studentnr = String.format("%s",s.getStudentNummer());
+                    if(s.getRooster().contains(l)&&presentie.containsKey(studentnr)){
                         s.setBeschikbaarheid(lesID, !Boolean.parseBoolean(presentie.get(studentnr).toString()));
                     }
                 }
