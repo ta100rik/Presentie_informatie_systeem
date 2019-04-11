@@ -35,8 +35,8 @@ public class Student extends Persoon {
 		this.groepId = pGroepId;
 	}
 
-	public void setBeschikbaarheid(Integer lesID, Boolean beschikbaar){
-		beschikbaarheid.put(lesID, beschikbaar);
+	public void setBeschikbaarheid(Integer lesID, Boolean afgemeld){
+		beschikbaarheid.put(lesID, afgemeld);
 	}
 
 	public boolean beschikbaar(int lesID){

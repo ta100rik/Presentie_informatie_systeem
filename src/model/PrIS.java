@@ -254,12 +254,12 @@ public class PrIS {
 								s.addLes(l);
 
 //								l.changeStatusLijst(s.getStudentNummer(), false);
-								boolean beschikbaar = true;
-								if(l.getLesID() == 10 && String.format("%s",s.getStudentNummer()).contains("174")) {
-									beschikbaar = false;
-								}
+//								boolean beschikbaar = false;
+//								if(l.getLesID() == 10 && String.format("%s",s.getStudentNummer()).contains("174")) {
+//									beschikbaar = false;
+//								}
 
-								s.setBeschikbaarheid(l.getLesID(), beschikbaar);
+								s.setBeschikbaarheid(l.getLesID(), false);
 							}
 						}
 					}
