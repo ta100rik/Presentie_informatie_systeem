@@ -131,8 +131,8 @@
                     <div class="col-6">
                         <h4>Totale afwezigheid:</h4>
                         <p>
-                            Aanwezig: [[present]]<br>
-                            Niet aanwezig: [[notpresent]]
+                            Aanwezig: [[present]]%<br>
+                            Niet aanwezig: [[notpresent]]%
                         </p>
                     </div>
                     <div class="col-6">
@@ -215,6 +215,12 @@
                     studentPris: {
                         type: Array,
                     },
+                    present:{
+                        type:Number,
+                    },
+                    notpresent:{
+                        type:Number,
+                    },
                     c_username: {
                         type: String,
                     },
@@ -276,7 +282,11 @@ Date huidigeDatum = new Date("2019/02/20");*/
                     this.vakken = info;
 
                 },
-
+                setpresentchart(){
+                    let present = this.present;
+                    let notpresent = this.notpresent;
+                    this.shadowRoot.getElementById('presentchart').setAttribute('data', '['+present+','+notpresent+']');
+                },
                 getKlassen:function(mouseclick) {
                     var selector = mouseclick.target.getAttribute('id');
                     console.log(selector);
@@ -347,26 +357,34 @@ Date huidigeDatum = new Date("2019/02/20");*/
                     this.$.ajax_gemiddelde_presentie.generateRequest();
                 },
                 _gemiddelde_presentie_ophalen_response_handler:function(request) {
-                    console.log(Object.entries(request.detail.response));
+                    // console.log(Object.entries(request.detail.response));
                     var gemAf = Object.entries(request.detail.response)[0][1];
-                    console.log(gemAf);
+                    // console.log(gemAf);
                     var students = Object.entries(gemAf);
-                    console.log(students.length);
+                    // console.log(students.length);
                     var studentenPris = [];
                     for (var i = 0; i < students.length; i++) {
                         var temp = Object.entries(students)[i];
-                        console.log(temp);
+                        // console.log(temp);
                         temp = Object.entries(students[i]);
-                        console.log(temp[1][1]);
+                        // console.log(temp[1][1]);
                         var student = Object.entries(temp[1][1]);
-                        console.log(student);
+                        // var student[2][1] = student[2][1].toFixed(0);
                         studentenPris.push(student);
 
 
                     }
 
-                    this.studentPris = studentenPris;
-                    console.log(this.studentPris);
+                    this.set('studentPris' , studentenPris);
+                    var stat = 0;
+                    var leerlingcount = 0;
+                    for(var e = 0;e < studentenPris.length;e++){
+                        leerlingcount++;
+                        stat = stat +studentenPris[e][2][1];
+                    }
+                    this.set("present",(stat / leerlingcount).toFixed(0));
+                    this.set("notpresent", (100- (stat / leerlingcount)).toFixed(0));
+                    this.setpresentchart();
 
                 },
 
